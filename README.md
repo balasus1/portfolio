@@ -31,7 +31,7 @@ Install the project dependencies using npm:
 
 ```bash
 npm install --legacy-peer-deps
-npm install
+npm install (throws few dependencies error. So go with above command)
 
 ```
 
@@ -40,9 +40,9 @@ npm install
 Create a new file named `.env` in the root of your project and add the following content:
 
 ```env
-REACT_APP_EMAILJS_USERID=${your_emailjs_user_id}
-REACT_APP_EMAILJS_TEMPLATEID=${your_emailjs_template_id}
-REACT_APP_EMAILJS_RECEIVERID=${your_emailjs_receiver_id}
+VITE_APP_EMAILJS_SERVICE_ID=YOUR_EMAILJS_SERVICEID
+VITE_APP_EMAILJS_TEMPLATE_ID=YOUR_EMAILJS_TEMPLATE_ID
+VITE_APP_EMAILJS_PUBLIC_KEY=YOUR_EMAILJS_PUB_KEY
 ```
 
 Replace the placeholder values with your actual EmailJS credentials. You can obtain these credentials by signing up on the [EmailJS website](https://www.emailjs.com/).

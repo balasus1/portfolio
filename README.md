@@ -31,7 +31,8 @@ cd portfolio
 Install the project dependencies using npm:
 
 ```bash
-npm install --legacy-peer-deps
+npm install --save-dev gh-pages (If you are serving the pages from gitHub)
+npm install --force
 npm install (throws few dependencies error. So go with above command)
 
 ```

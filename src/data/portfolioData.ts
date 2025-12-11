@@ -1,6 +1,6 @@
 export const profileData = {
     name: "Balasubramanian Shanmugham",
-    shortName: "Bala",
+    shortName: "My Portfolio",
     title: "Senior Fullstack Developer",
     subtitle: "Solution Architect",
     tagline: "Building Scalable Systems for Future",
@@ -179,7 +179,7 @@ export const profileData = {
       excerpt: "Learn how to design resilient microservices architecture using Apache Kafka for async communication and fallback mechanisms.",
       date: "Nov 2024",
       readTime: "8 min read",
-      tags: ["Kafka", "Microservices", "Architecture"],
+      tags: ["Kafka", "Microservices", "CAP Theorem"],
     },
     {
       id: 2,
@@ -187,7 +187,7 @@ export const profileData = {
       excerpt: "Deep dive into performance optimization techniques for large-scale React applications with complex state management.",
       date: "Oct 2024",
       readTime: "6 min read",
-      tags: ["React", "Performance", "Frontend"],
+      tags: ["ReactJS", "Performance", "State Management"],
     },
     {
       id: 3,
@@ -195,7 +195,7 @@ export const profileData = {
       excerpt: "Enterprise patterns and best practices for building serverless applications with AWS Lambda and API Gateway.",
       date: "Sep 2024",
       readTime: "10 min read",
-      tags: ["AWS", "Serverless", "Cloud"],
+      tags: ["Cloud Computing", "AWS"],
     },
   ];
   

@@ -2,10 +2,10 @@ import { motion } from "framer-motion";
 
 const AnimatedBackground = () => {
   return (
-    <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
+    <div className="animated-background-container fixed inset-0 -z-10 overflow-hidden pointer-events-none w-screen max-w-full">
       {/* Gradient Orbs */}
       <motion.div
-        className="absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-30"
+        className="animated-background-orb animated-background-orb-1 absolute top-1/4 -left-32 w-96 h-96 rounded-full opacity-30"
         style={{
           background: "radial-gradient(circle, hsl(174 72% 56% / 0.4) 0%, transparent 70%)",
         }}
@@ -20,7 +20,7 @@ const AnimatedBackground = () => {
         }}
       />
       <motion.div
-        className="absolute top-2/3 right-0 w-[500px] h-[500px] rounded-full opacity-20"
+        className="animated-background-orb animated-background-orb-2 absolute top-2/3 right-0 w-[500px] h-[500px] rounded-full opacity-20"
         style={{
           background: "radial-gradient(circle, hsl(280 70% 60% / 0.4) 0%, transparent 70%)",
         }}

@@ -1,11 +1,8 @@
 import { motion } from "framer-motion";
 import { Github, Linkedin, Mail, Heart } from "lucide-react";
 import { profileData } from "@/data/portfolioData";
-import { useState } from "react";
 
 const Footer = () => {
-  const [isHovered, setIsHovered] = useState(false);
-
   const socialLinks = [
     { icon: Github, href: profileData.github, label: "GitHub" },
     { icon: Linkedin, href: profileData.linkedin, label: "LinkedIn" },
@@ -19,28 +16,28 @@ const Footer = () => {
       items: [
         { hobby: "Nutrition Science", desc: "Understanding healthy living" },
         { hobby: "Financial Literacy", desc: "Mastering money concepts" },
-        { hobby: "Coding Tutorials", desc: "Expanding tech knowledge" },
-        { hobby: "Art History", desc: "Appreciating creativity" },
+        { hobby: "DSA", desc: "Daily DSA practice" },
+        { hobby: "Art & History", desc: "Appreciating creativity" },
       ],
     },
     {
       title: "Practice",
       color: "from-emerald-400 to-green-500",
       items: [
-        { hobby: "Gym Workouts", desc: "Building physical strength" },
-        { hobby: "Gardening", desc: "Nurturing plant life" },
-        { hobby: "Walking & Hiking", desc: "Exploring nature daily" },
-        { hobby: "Carpentry", desc: "Crafting with hands" },
+        { hobby: "Healthy Eating", desc: "Transforming lifestyle" },
+        { hobby: "Investment Management", desc: "Building wealth habits" },
+        { hobby: "Build software & Hardware", desc: "Creating digital solutions" },
+        { hobby: "Carpentry & Contemporary Arts", desc: "Crafting with hands" },
       ],
     },
     {
       title: "Grow",
       color: "from-amber-400 to-orange-500",
       items: [
-        { hobby: "Healthy Eating", desc: "Transforming lifestyle" },
-        { hobby: "Money Management", desc: "Building wealth habits" },
-        { hobby: "Building Apps", desc: "Creating digital solutions" },
-        { hobby: "Paintings", desc: "Expressing through art" },
+        { hobby: "Gym Workouts", desc: "Building physical strength" },
+        { hobby: "Stock Market Monitoring", desc: "Checking stock market trends" },
+        { hobby: "State of Art", desc: "Creating digital solutions" },
+        { hobby: "Build digital galleries", desc: "Expressing through art" },
       ],
     },
     {
@@ -48,151 +45,49 @@ const Footer = () => {
       color: "from-rose-400 to-pink-500",
       items: [
         { hobby: "Fitness Mentoring", desc: "Inspiring healthy lives" },
-        { hobby: "Community Gardens", desc: "Greening neighborhoods" },
-        { hobby: "Teaching Kids", desc: "Shaping young minds" },
-        { hobby: "Charity Drives", desc: "Giving back to society" },
+        { hobby: "Financial Advisory", desc: "Teaching financial literacy" },
+        { hobby: "Indian Defence Sector", desc: "Contributing to the nation's defense" },
+        { hobby: "Sell NFTs & Tokens", desc: "Giving back to society" },
       ],
     },
   ];
 
   return (
-    <footer className="relative border-t border-border bg-gradient-to-b from-background to-card/50 overflow-hidden">
-      {/* Simple Black & White Ikigai Tree */}
-      <div 
-        className="absolute left-0 top-0 bottom-0 w-40 sm:w-52 md:w-64 lg:w-80 pointer-events-auto z-10"
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
-      >
-        <svg
-          viewBox="0 0 300 500"
-          className="w-full h-full opacity-40"
-          style={{ filter: isHovered ? "drop-shadow(0 0 20px hsl(var(--primary) / 0.3))" : "none" }}
-        >
-          {/* Simple trunk */}
-          <motion.path
-            d="M150 480 Q145 400 150 350 Q155 300 150 250 Q145 200 150 160"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="8"
-            strokeLinecap="round"
-            className="text-foreground/80"
-            animate={isHovered ? { 
-              d: ["M150 480 Q145 400 150 350 Q155 300 150 250 Q145 200 150 160", 
-                  "M150 480 Q147 400 152 350 Q153 300 148 250 Q147 200 150 160",
-                  "M150 480 Q145 400 150 350 Q155 300 150 250 Q145 200 150 160"]
-            } : {}}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-
-          {/* Main branches */}
-          {[
-            { d: "M150 250 Q120 230 80 210", delay: 0 },
-            { d: "M150 250 Q180 230 220 210", delay: 0.1 },
-            { d: "M150 200 Q110 170 70 150", delay: 0.2 },
-            { d: "M150 200 Q190 170 230 150", delay: 0.3 },
-            { d: "M150 180 Q130 150 100 120", delay: 0.4 },
-            { d: "M150 180 Q170 150 200 120", delay: 0.5 },
-            { d: "M150 160 Q150 130 150 100", delay: 0.6 },
-            { d: "M70 150 Q50 130 30 120", delay: 0.7 },
-            { d: "M230 150 Q250 130 270 120", delay: 0.8 },
-            { d: "M80 210 Q60 200 40 190", delay: 0.9 },
-            { d: "M220 210 Q240 200 260 190", delay: 1.0 },
-          ].map((branch, i) => (
-            <motion.path
-              key={`branch-${i}`}
-              d={branch.d}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={6 - i * 0.3}
-              strokeLinecap="round"
-              className="text-foreground/70"
-              animate={isHovered ? { 
-                rotate: [0, -2, 2, 0],
-              } : {}}
-              transition={{ duration: 1.5, repeat: Infinity, delay: branch.delay }}
-              style={{ transformOrigin: "150px 250px" }}
-            />
-          ))}
-
-          {/* Smaller branches */}
-          {[
-            "M100 120 Q80 100 60 90",
-            "M200 120 Q220 100 240 90",
-            "M150 100 Q140 80 130 65",
-            "M150 100 Q160 80 170 65",
-            "M30 120 Q20 100 15 85",
-            "M270 120 Q280 100 285 85",
-            "M40 190 Q25 180 15 170",
-            "M260 190 Q275 180 285 170",
-          ].map((d, i) => (
-            <motion.path
-              key={`small-branch-${i}`}
-              d={d}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={3}
-              strokeLinecap="round"
-              className="text-foreground/60"
-              animate={isHovered ? { rotate: [0, -3, 3, 0] } : {}}
-              transition={{ duration: 1.2, repeat: Infinity, delay: i * 0.1 }}
-              style={{ transformOrigin: "150px 200px" }}
-            />
-          ))}
-
-          {/* Roots */}
-          {[
-            "M150 480 Q120 470 80 485",
-            "M150 480 Q180 470 220 485",
-            "M150 480 Q130 475 100 480",
-            "M150 480 Q170 475 200 480",
-          ].map((d, i) => (
-            <path
-              key={`root-${i}`}
-              d={d}
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={4}
-              strokeLinecap="round"
-              className="text-foreground/50"
-            />
-          ))}
-
-          {/* Center Ikigai circle */}
-          <motion.circle
-            cx="150"
-            cy="200"
-            r="30"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            className="text-primary"
-            animate={{
-              scale: [1, 1.05, 1],
-              opacity: [0.7, 1, 0.7],
-            }}
-            transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
-          />
-          <motion.circle
-            cx="150"
-            cy="200"
-            r="22"
-            fill="hsl(var(--background))"
-            stroke="currentColor"
-            strokeWidth="1"
-            className="text-primary/50"
-          />
-          <text x="150" y="197" textAnchor="middle" className="fill-primary text-[9px] font-bold tracking-wider">
-            IKIGAI
-          </text>
-          <text x="150" y="208" textAnchor="middle" className="fill-primary/60 text-[6px]">
-            生き甲斐
-          </text>
-        </svg>
+    <footer className="footer-container relative border-t border-gray-900 bg-black overflow-hidden">
+      {/* Ikigai Image as Translucent Background */}
+      <div className="footer-background absolute inset-0 z-0">
+        <motion.img
+          src="/ikigai.png"
+          alt="Ikigai - Life Purpose"
+          className="w-full h-full object-cover"
+          style={{
+            objectPosition: "center",
+            opacity: 0.3,
+            filter: "blur(0.5px)",
+          }}
+          initial={{ opacity: 0, scale: 1.05 }}
+          animate={{ opacity: 0.4, scale: 1 }}
+          transition={{ duration: 1 }}
+        />
+        {/* Lighter gradient overlay for better text readability while showing image */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.4) 50%, rgba(0,0,0,0.5) 100%)",
+          }}
+        />
+        {/* Subtle radial gradient for depth */}
+        <div 
+          className="absolute inset-0"
+          style={{
+            background: "radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.2) 100%)",
+          }}
+        />
       </div>
 
-      <div className="container-custom py-12 md:py-16 relative z-20">
+      <div className="footer-content-wrapper container-custom py-12 md:py-16 relative z-10">
         {/* Ikigai Columns */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8 pl-44 sm:pl-56 md:pl-0 md:ml-64 lg:ml-72">
+        <div className="footer-columns-grid grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-8">
           {ikigaiColumns.map((column, colIndex) => (
             <motion.div
               key={column.title}
@@ -200,14 +95,22 @@ const Footer = () => {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: colIndex * 0.1 }}
               viewport={{ once: true }}
-              className="space-y-3 md:space-y-4"
+              className="space-y-3 md:space-y-4 relative"
             >
+              {/* Subtle background for better text readability */}
+              <div 
+                className="absolute inset-0 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                style={{
+                  background: "linear-gradient(135deg, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.1) 100%)",
+                  backdropFilter: "blur(4px)",
+                }}
+              />
               <h4
-                className={`font-heading font-bold text-base md:text-lg bg-gradient-to-r ${column.color} bg-clip-text text-transparent`}
+                className={`font-heading font-bold text-base md:text-lg bg-gradient-to-r ${column.color} bg-clip-text text-transparent relative z-10 drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]`}
               >
                 {column.title}
               </h4>
-              <ul className="space-y-2 md:space-y-3">
+              <ul className="space-y-2 md:space-y-3 relative z-10">
                 {column.items.map((item, itemIndex) => (
                   <motion.li
                     key={item.hobby}
@@ -217,11 +120,13 @@ const Footer = () => {
                     viewport={{ once: true }}
                     className="group"
                   >
-                    <p className="text-xs md:text-sm font-medium text-foreground group-hover:text-primary transition-colors cursor-default">
+                    <p 
+                      className="text-xs md:text-sm font-medium group-hover:text-primary transition-colors cursor-default drop-shadow-[0_1px_2px_rgba(0,0,0,0.8)]"
+                      style={{
+                        textShadow: "0 1px 3px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5)",
+                      }}
+                    >
                       {item.hobby}
-                    </p>
-                    <p className="text-[10px] md:text-xs text-muted-foreground">
-                      {item.desc}
                     </p>
                   </motion.li>
                 ))}
@@ -231,9 +136,21 @@ const Footer = () => {
         </div>
 
         {/* Bottom section */}
-        <div className="mt-10 md:mt-12 pt-6 md:pt-8 border-t border-border flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 pl-44 sm:pl-56 md:pl-0 md:ml-64 lg:ml-72">
-          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4">
-            <p className="text-xs md:text-sm text-muted-foreground">
+        <div className="footer-bottom-section mt-10 md:mt-12 pt-6 md:pt-8 border-t border-gray-800 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6 relative">
+          {/* Subtle backdrop for bottom section */}
+          <div 
+            className="absolute inset-0 -mx-4 md:-mx-8 opacity-50"
+            style={{
+              background: "linear-gradient(to top, rgba(0,0,0,0.4) 0%, transparent 100%)",
+            }}
+          />
+          <div className="flex flex-col md:flex-row items-center gap-3 md:gap-4 relative z-10">
+            <p 
+              className="text-xs md:text-sm text-muted-foreground"
+              style={{
+                textShadow: "0 1px 3px rgba(0,0,0,0.9)",
+              }}
+            >
               © {new Date().getFullYear()} {profileData.name}
             </p>
             <div className="flex gap-2 md:gap-3">
@@ -253,7 +170,12 @@ const Footer = () => {
               ))}
             </div>
           </div>
-          <p className="text-xs md:text-sm text-muted-foreground flex items-center gap-1">
+          <p 
+            className="text-xs md:text-sm text-muted-foreground flex items-center gap-1 relative z-10"
+            style={{
+              textShadow: "0 1px 3px rgba(0,0,0,0.9)",
+            }}
+          >
             Built with <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-destructive fill-destructive" /> using React & Tailwind
           </p>
         </div>

@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 
 const BlogSection = () => {
   return (
-    <section id="blog" className="section-padding relative">
-      <div className="container-custom">
+    <section id="blog" className="blog-section-container section-padding relative">
+      <div className="blog-section-wrapper container-custom">
         <SectionHeading title="Latest Insights" subtitle="Blog">
           Thoughts on architecture, development, and technology trends
         </SectionHeading>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="blog-grid grid md:grid-cols-2 lg:grid-cols-3 gap-8">
           {blogPosts.map((post, index) => (
             <motion.article
               key={post.id}

@@ -4,9 +4,9 @@ import { Button } from "@/components/ui/button";
 
 const CTASection = () => {
   return (
-    <section className="py-20 relative overflow-hidden">
+    <section className="cta-section-container py-20 relative overflow-hidden">
       {/* Background Gradient */}
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10" />
+      <div className="cta-background absolute inset-0 bg-gradient-to-r from-primary/10 via-accent/10 to-primary/10" />
       
       {/* Decorative Orbs */}
       <motion.div
@@ -26,7 +26,7 @@ const CTASection = () => {
         transition={{ duration: 8, repeat: Infinity }}
       />
 
-      <div className="container-custom relative">
+      <div className="cta-content-wrapper container-custom relative">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}

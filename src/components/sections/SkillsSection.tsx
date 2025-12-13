@@ -14,8 +14,8 @@ const SkillsSection = () => {
     skills.filter((s) => s.category === category);
 
   return (
-    <section id="skills" className="section-padding relative overflow-hidden">
-      <div className="container-custom">
+    <section id="skills" className="skills-section-container section-padding relative">
+      <div className="skills-section-wrapper container-custom">
         <SectionHeading title="Skills & Expertise" subtitle="What I work with">
           My Confidence level measured in % for each skill
         </SectionHeading>
@@ -25,7 +25,7 @@ const SkillsSection = () => {
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="flex justify-center mb-8"
+          className="skills-legend-container flex justify-center mb-8"
         >
           <div 
             className="px-6 py-4 flex flex-wrap items-center justify-center gap-4 md:gap-6 rounded-xl border-2 relative overflow-hidden"
@@ -58,7 +58,7 @@ const SkillsSection = () => {
         </motion.div>
 
         {/* Honeycomb Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="skills-grid-container grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {layers.map((layer, layerIdx) => (
             <motion.div
               key={layer.category}
@@ -66,7 +66,7 @@ const SkillsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: layerIdx * 0.1 }}
-              className="p-5 rounded-xl relative overflow-hidden border-2"
+              className="skills-layer-card p-5 rounded-xl relative overflow-hidden border-2"
               style={{
                 background: "linear-gradient(135deg, hsl(var(--card) / 0.7) 0%, hsl(var(--card) / 0.5) 100%)",
                 backdropFilter: "blur(20px)",

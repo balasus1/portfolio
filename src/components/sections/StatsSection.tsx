@@ -41,10 +41,10 @@ const Counter = ({ value, suffix }: { value: number; suffix: string }) => {
 
 const StatsSection = () => {
   return (
-    <section className="py-16 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5" />
-      <div className="container-custom relative">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+    <section className="stats-section-container py-16 relative overflow-hidden">
+      <div className="stats-background absolute inset-0 bg-gradient-to-r from-primary/5 via-accent/5 to-primary/5" />
+      <div className="stats-section-wrapper container-custom relative">
+        <div className="stats-grid grid grid-cols-2 md:grid-cols-4 gap-8">
           {stats.map((stat, index) => (
             <motion.div
               key={stat.label}
@@ -52,7 +52,7 @@ const StatsSection = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
-              className="text-center"
+              className="stats-item text-center"
             >
               <div className="text-4xl md:text-5xl lg:text-6xl font-heading font-bold gradient-text mb-2">
                 <Counter value={stat.value} suffix={stat.suffix} />

@@ -5,15 +5,15 @@ import SectionHeading from "@/components/ui/SectionHeading";
 
 const ExperienceSection = () => {
   return (
-    <section id="experience" className="section-padding relative">
-      <div className="container-custom">
+    <section id="experience" className="experience-section-container section-padding relative">
+      <div className="experience-section-wrapper container-custom">
         <SectionHeading title="Work Experience" subtitle="My Journey">
           Over two decades of building enterprise-grade solutions
         </SectionHeading>
 
-        <div className="relative max-w-4xl mx-auto">
+        <div className="experience-timeline-container relative max-w-4xl mx-auto">
           {/* Timeline Line - Dotted with neon effect */}
-          <div className="absolute left-0 md:left-1/2 top-0 bottom-0 w-0.5 md:-translate-x-px">
+          <div className="experience-timeline-line absolute left-0 md:left-1/2 top-0 w-0.5 md:-translate-x-px pointer-events-none" style={{ height: '100%' }}>
             {/* Dotted line background */}
             <div 
               className="absolute inset-0"

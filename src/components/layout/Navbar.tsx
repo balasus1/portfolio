@@ -55,29 +55,29 @@ const Navbar = () => {
     <motion.nav
       initial={{ y: 0 }}
       animate={{ y: 0 }}
-      className={`fixed top-0 left-0 right-0 z-50 will-change-transform ${
+      className={`header-container fixed top-0 left-0 right-0 z-50 ${
         scrolled ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-lg" : "bg-transparent"
       }`}
       style={{
-        transform: "translateZ(0)",
-        WebkitTransform: "translateZ(0)",
+        transform: "translate3d(0, 0, 0)",
+        WebkitTransform: "translate3d(0, 0, 0)",
         backfaceVisibility: "hidden",
         WebkitBackfaceVisibility: "hidden",
-        transition: "background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease",
+        willChange: "transform",
       }}
     >
-      <div className="container-custom">
-        <div className="flex items-center justify-between h-20">
+      <div className="header-wrapper container-custom">
+        <div className="header-content flex items-center justify-between h-20">
           <motion.a
             href="#home"
-            className="text-2xl font-heading font-bold gradient-text"
+            className="header-logo text-2xl font-heading font-bold gradient-text"
             whileHover={{ scale: 1.05 }}
           >
             {profileData.shortName}
           </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center gap-8">
+          <div className="nav-menu-desktop hidden md:flex items-center gap-8">
             {navItems.map((item) => (
               <motion.button
                 key={item.name}
@@ -111,7 +111,7 @@ const Navbar = () => {
 
           {/* Mobile Menu Button */}
           <button
-            className="md:hidden p-2 text-foreground"
+            className="mobile-menu-toggle md:hidden p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -127,9 +127,9 @@ const Navbar = () => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border"
+            className="mobile-menu-container md:hidden bg-background/95 backdrop-blur-xl border-b border-border"
           >
-            <div className="container-custom py-4 flex flex-col gap-2">
+            <div className="mobile-menu-content container-custom py-4 flex flex-col gap-2">
               {navItems.map((item, index) => (
                 <motion.button
                   key={item.name}

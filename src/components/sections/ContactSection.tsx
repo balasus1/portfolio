@@ -62,19 +62,20 @@ const ContactSection = () => {
   ];
 
   return (
-    <section id="contact" className="section-padding relative">
-      <div className="container-custom">
+    <section id="contact" className="contact-section-container section-padding relative">
+      <div className="contact-section-wrapper container-custom">
         <SectionHeading title="Get In Touch" subtitle="Contact">
           Interested in working together? Let's discuss your next project.
         </SectionHeading>
 
-        <div className="grid lg:grid-cols-2 gap-12 lg:gap-16">
+        <div className="contact-content-grid grid lg:grid-cols-2 gap-12 lg:gap-16">
           {/* Contact Info */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
+            className="contact-info-container"
           >
             <h3 className="text-2xl font-heading font-bold mb-6">
               Let's Build Something <span className="gradient-text">Amazing</span>

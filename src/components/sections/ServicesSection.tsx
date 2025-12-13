@@ -50,13 +50,13 @@ const services = [
 
 const ServicesSection = () => {
   return (
-    <section className="section-padding relative">
-      <div className="container-custom">
+    <section className="services-section-container section-padding relative">
+      <div className="services-section-wrapper container-custom">
         <SectionHeading title="What I Do" subtitle="Services">
           End-to-end solutions from architecture to deployment
         </SectionHeading>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="services-grid grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {services.map((service, index) => (
             <motion.div
               key={service.title}

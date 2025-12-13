@@ -16,18 +16,18 @@ const AboutSection = () => {
   const initials = getInitials(profileData.name);
 
   return (
-    <section id="about" className="section-padding relative">
-      <div className="container-custom">
+    <section id="about" className="about-section-container section-padding relative">
+      <div className="about-section-wrapper container-custom">
         <SectionHeading title="About Me" subtitle="Get to know me" />
 
-        <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+        <div className="about-cards-grid grid lg:grid-cols-2 gap-8 lg:gap-12">
           {/* Left Card - Profile */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative"
+            className="about-profile-card relative"
           >
             <div 
               className="p-8 md:p-10 rounded-xl relative overflow-hidden border-2"
@@ -111,6 +111,7 @@ const AboutSection = () => {
           {/* Right Card - Education & Certifications */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
+            className="about-education-card"
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}

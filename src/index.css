@@ -76,6 +76,13 @@
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
+    overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100vw;
+    height: 100%;
+    margin: 0;
+    padding: 0;
   }
 
   body {
@@ -84,14 +91,135 @@
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-y: contain;
     overflow-x: hidden;
+    overflow-y: auto;
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
+    position: relative;
+  }
+
+  /* Root container fixes */
+  #root {
+    width: 100%;
+    max-width: 100vw;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    overflow-y: visible;
+    position: relative;
   }
 
   /* Prevent scroll chaining on mobile */
   main {
     overscroll-behavior-y: contain;
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Fix for mobile fixed header - iOS Safari compatibility */
+  /* Let Tailwind's fixed class handle positioning, add mobile optimizations */
+  .header-container.fixed {
+    /* Force GPU acceleration for better mobile performance */
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    will-change: transform;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+  }
+
+  /* Ensure header wrapper doesn't interfere */
+  .header-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Root container class */
+  .root-container {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* Main content container */
+  .main-content {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  /* Prevent all sections from causing horizontal overflow */
+  section {
+    width: 100%;
+    max-width: 100%;
+    overflow-x: hidden;
+    overflow-y: visible;
+    box-sizing: border-box;
+  }
+
+  /* Global fix: Prevent vertical scrollbars on all section containers and wrappers */
+  [class*="-section-container"],
+  [class*="-section-wrapper"],
+  [class*="-wrapper"],
+  [class*="-container"]:not([class*="-card"]):not([class*="glass-card"]):not([class*="resume-modal"]) {
+    overflow: hidden;
+    scroll-behavior: smooth;
+  }
+
+  /* Ensure main wrapper/container patterns don't create scrollbars */
+  .container-custom,
+  .main-content,
+  .root-container {
+    overflow-y: visible !important;
+    overflow-x: hidden;
+  }
+
+  /* Timeline line specific fix - needs visible overflow for animations */
+  .experience-timeline-line {
+    overflow: visible;
+  }
+
+  /* Note: All section containers, wrappers, and grids are now handled by the global rule above */
+
+  /* Ensure all containers respect viewport width */
+  .container-custom {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow-x: hidden;
+  }
+
+  /* Global box-sizing fix */
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  /* Mobile-specific optimizations for fixed header */
+  @media (max-width: 768px) {
+    .header-container.fixed {
+      /* Reduce backdrop blur on mobile for better performance and stability */
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      /* Ensure it stays fixed on mobile browsers */
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      right: 0 !important;
+      width: 100% !important;
+      max-width: 100% !important;
+    }
   }
 
   h1, h2, h3, h4, h5, h6 {

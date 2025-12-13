@@ -74,14 +74,14 @@ const TestimonialsSection = () => {
   const currentTestimonial = testimonials[currentIndex];
 
   return (
-    <section className="section-padding relative overflow-hidden bg-gradient-to-b from-background to-secondary/20">
-      <div className="container-custom">
+    <section className="testimonials-section-container section-padding relative overflow-hidden bg-gradient-to-b from-background to-secondary/20">
+      <div className="testimonials-section-wrapper container-custom">
         <SectionHeading title="What People Say" subtitle="Testimonials">
           Feedback from colleagues and clients I've worked with
         </SectionHeading>
 
-        <div className="max-w-4xl mx-auto">
-          <div className="relative">
+        <div className="testimonials-container max-w-4xl mx-auto">
+          <div className="testimonial-card-wrapper relative">
             {/* Quote Icon */}
             <div className="absolute -top-6 -left-4 md:-left-8 w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center">
               <Quote className="w-8 h-8 text-primary" />

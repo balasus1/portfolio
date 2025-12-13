@@ -38,14 +38,14 @@ const LocationMapTooltip = ({ isVisible, coordinates, locationName, onClose }: L
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.8, y: 10 }}
             transition={{ duration: 0.2 }}
-            className="absolute bottom-full left-1/2 -translate-x-1/2 mb-0.5 z-50"
+            className="location-map-tooltip absolute bottom-full left-1/2 -translate-x-1/2 mb-0.5 z-50"
             style={{ 
               pointerEvents: "auto",
               marginBottom: "2px"
             }}
           >
             <div
-              className="relative rounded-xl overflow-hidden border-2"
+              className="location-map-content relative rounded-xl overflow-hidden border-2"
               style={{
                 width: "150px",
                 height: "150px",

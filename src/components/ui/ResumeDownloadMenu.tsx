@@ -71,7 +71,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="fixed inset-0 z-[100] flex items-center justify-center p-4"
+        className="resume-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4"
         style={{
           background: "radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)",
           backdropFilter: "blur(8px)",
@@ -79,7 +79,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
         onClick={onClose}
       >
         {/* Animated background particles */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="resume-modal-particles absolute inset-0 overflow-hidden pointer-events-none">
           {[...Array(20)].map((_, i) => (
             <motion.div
               key={i}
@@ -116,7 +116,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
         >
           {/* Gaming-style menu container with enhanced glow */}
           <div
-            className="relative overflow-hidden rounded-2xl border-2"
+            className="resume-modal-content relative overflow-hidden rounded-2xl border-2"
             style={{
               background: "linear-gradient(135deg, hsl(var(--card) / 0.85) 0%, hsl(var(--card) / 0.65) 50%, hsl(var(--card) / 0.85) 100%)",
               backdropFilter: "blur(24px)",
@@ -175,7 +175,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
             ))}
 
             {/* Header with gaming style */}
-            <div className="relative p-4 sm:p-6 border-b" style={{ borderColor: "hsl(var(--primary) / 0.2)" }}>
+            <div className="resume-modal-header relative p-4 sm:p-6 border-b" style={{ borderColor: "hsl(var(--primary) / 0.2)" }}>
               {/* Shimmer overlay */}
               <div
                 className="absolute inset-0 opacity-30"

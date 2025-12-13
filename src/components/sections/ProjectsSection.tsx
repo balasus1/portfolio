@@ -44,16 +44,16 @@ const ProjectsSection = () => {
   const currentProject = projects[currentIndex];
 
   return (
-    <section id="projects" className="section-padding relative overflow-hidden">
-      <div className="container-custom">
+    <section id="projects" className="projects-section-container section-padding relative overflow-hidden">
+      <div className="projects-section-wrapper container-custom">
         <SectionHeading title="Featured Projects" subtitle="My Work">
           Enterprise solutions designed, developed and delivered as Individual contributor
         </SectionHeading>
 
         {/* Project Showcase */}
-        <div className="relative">
+        <div className="projects-showcase relative">
           {/* Main Carousel */}
-          <div className="relative h-[600px] md:h-[500px] overflow-hidden rounded-2xl">
+          <div className="projects-carousel relative h-[600px] md:h-[500px] overflow-hidden rounded-2xl">
             <AnimatePresence initial={false} custom={direction}>
               <motion.div
                 key={currentIndex}

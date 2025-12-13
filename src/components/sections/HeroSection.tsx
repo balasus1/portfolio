@@ -38,9 +38,9 @@ const HeroSection = () => {
   ];
 
   return (
-    <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section id="home" className="hero-section-container min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background Image */}
-      <div className="absolute inset-0 z-0">
+      <div className="hero-background absolute inset-0 z-0">
         {/* Background image with opacity */}
         <div
           className="absolute inset-0"
@@ -57,12 +57,12 @@ const HeroSection = () => {
         <div className="absolute inset-0 bg-gradient-to-b from-background/99 via-background/95 to-background/98" />
       </div>
 
-      <div className="container-custom section-padding relative z-10">
+      <div className="hero-content-wrapper container-custom section-padding relative z-10">
         <motion.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
-          className="max-w-4xl mx-auto text-center"
+          className="hero-content max-w-4xl mx-auto text-center"
         >
           {/* Status Badge */}
           <motion.div variants={itemVariants} className="inline-flex items-center gap-3 mb-6">
@@ -245,6 +245,7 @@ const HeroSection = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
+                className="hero-social-link"
                 className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
                 whileHover={{ scale: 1.1, y: -4 }}
                 whileTap={{ scale: 0.95 }}
@@ -262,11 +263,11 @@ const HeroSection = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
+        className="hero-scroll-indicator absolute bottom-8 left-1/2 -translate-x-1/2 z-10"
       >
         <motion.button
           onClick={() => document.getElementById("about")?.scrollIntoView({ behavior: "smooth" })}
-          className="flex items-center justify-center transition-all cursor-pointer"
+          className="hero-scroll-button flex items-center justify-center transition-all cursor-pointer"
           animate={{ 
             y: [0, 8, 0],
             opacity: [0.6, 1, 0.6],

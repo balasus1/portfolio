@@ -167,6 +167,25 @@
     box-sizing: border-box;
   }
 
+  /* Apply scroll animations to all sections when animations are enabled */
+  .animations-enabled section[id] {
+    opacity: 0;
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+    transform: translateY(40px);
+  }
+
+  /* Intersection Observer will add this class via useScrollAnimation hook */
+  .animations-enabled section[id].section-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* When animations disabled, show all sections immediately */
+  .no-animations section[id] {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+
   /* Global fix: Prevent vertical scrollbars on all section containers and wrappers */
   [class*="-section-container"],
   [class*="-section-wrapper"],
@@ -328,6 +347,157 @@
 
 .animate-fade-in {
   animation: fade-in 0.8s ease-out forwards;
+}
+
+/* Smooth scroll behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Disable animations when no-animations class is present */
+.no-animations *,
+.no-animations *::before,
+.no-animations *::after {
+  animation-duration: 0s !important;
+  animation-delay: 0s !important;
+  transition-duration: 0s !important;
+  transition-delay: 0s !important;
+  scroll-behavior: auto !important;
+}
+
+/* Scroll-triggered animation classes - Initial states */
+.scroll-animate-up-initial,
+.scroll-animate-down-initial,
+.scroll-animate-left-initial,
+.scroll-animate-right-initial,
+.scroll-animate-fade-initial {
+  opacity: 0;
+  will-change: transform, opacity;
+}
+
+.scroll-animate-up-initial {
+  transform: translateY(40px);
+}
+
+.scroll-animate-down-initial {
+  transform: translateY(-40px);
+}
+
+.scroll-animate-left-initial {
+  transform: translateX(40px);
+}
+
+.scroll-animate-right-initial {
+  transform: translateX(-40px);
+}
+
+/* Scroll-triggered animation classes - Active states */
+.scroll-animate-up-active,
+.scroll-animate-down-active,
+.scroll-animate-left-active,
+.scroll-animate-right-active,
+.scroll-animate-fade-active {
+  animation: scrollFadeIn 0.6s ease-out forwards;
+}
+
+.scroll-animate-up-active {
+  animation-name: scrollSlideUp;
+}
+
+.scroll-animate-down-active {
+  animation-name: scrollSlideDown;
+}
+
+.scroll-animate-left-active {
+  animation-name: scrollSlideLeft;
+}
+
+.scroll-animate-right-active {
+  animation-name: scrollSlideRight;
+}
+
+.scroll-animate-fade-active {
+  animation-name: scrollFadeIn;
+}
+
+/* Animation keyframes */
+@keyframes scrollSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes scrollSlideLeft {
+  from {
+    opacity: 0;
+    transform: translateX(40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollSlideRight {
+  from {
+    opacity: 0;
+    transform: translateX(-40px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scrollFadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  
+  .scroll-animate-up-active,
+  .scroll-animate-down-active,
+  .scroll-animate-left-active,
+  .scroll-animate-right-active,
+  .scroll-animate-fade-active {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  
+  .scroll-animate-up-initial,
+  .scroll-animate-down-initial,
+  .scroll-animate-left-initial,
+  .scroll-animate-right-initial,
+  .scroll-animate-fade-initial {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* Custom scrollbar */

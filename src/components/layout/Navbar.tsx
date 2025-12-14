@@ -4,6 +4,7 @@ import { Menu, X, Download } from "lucide-react";
 import { navItems, profileData } from "@/data/portfolioData";
 import { Button } from "@/components/ui/button";
 import ResumeDownloadMenu from "@/components/ui/ResumeDownloadMenu";
+import AnimationToggle from "@/components/ui/AnimationToggle";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -77,7 +78,7 @@ const Navbar = () => {
           </motion.a>
 
           {/* Desktop Navigation */}
-          <div className="nav-menu-desktop hidden md:flex items-center gap-8">
+          <div className="nav-menu-desktop hidden md:flex items-center gap-6">
             {navItems.map((item) => (
               <motion.button
                 key={item.name}
@@ -98,6 +99,8 @@ const Navbar = () => {
                 )}
               </motion.button>
             ))}
+            {/* Animation Toggle for Desktop/Tablet */}
+            <AnimationToggle />
             <Button 
               variant="default" 
               size="sm" 
@@ -109,14 +112,18 @@ const Navbar = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <button
-            className="mobile-menu-toggle md:hidden p-2 text-foreground"
-            onClick={() => setIsOpen(!isOpen)}
-            aria-label="Toggle menu"
-          >
-            {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          {/* Mobile Menu - Animation Toggle and Hamburger */}
+          <div className="mobile-menu-actions md:hidden flex items-center gap-2">
+            {/* Animation Toggle for Mobile */}
+            <AnimationToggle />
+            <button
+              className="mobile-menu-toggle p-2 text-foreground rounded-lg hover:bg-muted transition-colors"
+              onClick={() => setIsOpen(!isOpen)}
+              aria-label="Toggle menu"
+            >
+              {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 

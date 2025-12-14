@@ -15,8 +15,12 @@ import CTASection from "@/components/sections/CTASection";
 import BlogSection from "@/components/sections/BlogSection";
 import ContactSection from "@/components/sections/ContactSection";
 import { profileData } from "@/data/portfolioData";
+import { useSectionAnimations } from "@/utils/sectionAnimations";
 
 const Index = () => {
+  // Automatically apply scroll animations to all sections
+  useSectionAnimations();
+
   return (
     <>
       <Helmet>

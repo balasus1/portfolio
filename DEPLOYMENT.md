@@ -7,13 +7,14 @@ This guide explains how to build, deploy, and run the portfolio application usin
 **Modern Approach (Recommended):** Use Docker Registry (no Git repo on VPS)
 - Build image in GitHub Actions or locally
 - Push to GitHub Container Registry (ghcr.io) or Docker Hub
-- VPS pulls image and runs docker-compose
-- **VPS only needs:** `docker-compose.yml` + `nginx.conf` (see [VPS_SETUP.md](./VPS_SETUP.md))
+- VPS pulls image and runs docker compose with override files
+- **VPS only needs:** `docker-compose.yml` + `docker-compose.prod.yml` + `nginx.conf` (see [VPS_SETUP.md](./VPS_SETUP.md))
+- Uses unified configuration with `./compose.sh` for mode switching
 
 **Traditional Approach:** Build on VPS from source code
 - Clone repo on VPS
 - Build image on VPS
-- Run docker-compose
+- Run docker compose
 
 ## 🏗️ Architecture
 
@@ -47,8 +48,15 @@ This guide explains how to build, deploy, and run the portfolio application usin
    ```
 
 2. **Build and run with Docker Compose**
+   
+   **Method 1: Using compose.sh script (Recommended)**
    ```bash
-   docker-compose up -d --build
+   ./compose.sh local up -d
+   ```
+   
+   **Method 2: Direct docker compose**
+   ```bash
+   docker compose up -d --build
    ```
 
 3. **Access the application**
@@ -56,13 +64,19 @@ This guide explains how to build, deploy, and run the portfolio application usin
 
 4. **View logs**
    ```bash
-   docker-compose logs -f portfolio
+   ./compose.sh local logs -f
+   # or
+   docker compose logs -f portfolio
    ```
 
 5. **Stop the application**
    ```bash
-   docker-compose down
+   ./compose.sh local down
+   # or
+   docker compose down
    ```
+
+   **See [COMPOSE_GUIDE.md](./COMPOSE_GUIDE.md) for more options and details.**
 
 ### Option 2: Deploy to VPS (Registry-based, Recommended)
 
@@ -98,21 +112,46 @@ This guide explains how to build, deploy, and run the portfolio application usin
    docker login
    ```
 
-5. **Update docker-compose.yml** with your image name:
+5. **Create docker-compose.yml** (or let GitHub Actions create it automatically)
+   
+   On VPS, GitHub Actions will transfer the production docker-compose.yml automatically.
+   Or create manually:
    ```yaml
-   image: ghcr.io/yourusername/myportfolio:latest
+   services:
+     portfolio:
+       image: ghcr.io/yourusername/myportfolio:latest
+       container_name: portfolio-app
+       restart: unless-stopped
+       ports:
+         - "80:80"
+       volumes:
+         - ./logs:/var/log/nginx
+       networks:
+         - portfolio-network
+       healthcheck:
+         test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+         interval: 30s
+         timeout: 3s
+         retries: 3
+         start_period: 10s
+   
+   networks:
+     portfolio-network:
+       driver: bridge
    ```
 
-6. **Pull and run**
+6. **Pull and run** (using production override)
    ```bash
    docker pull ghcr.io/yourusername/myportfolio:latest
    docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
-   docker-compose up -d
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
    ```
+   
+   **Note**: GitHub Actions automatically creates and uses `docker-compose.prod.yml` on VPS
 
 7. **Verify deployment**
    ```bash
-   docker-compose ps
+   docker compose ps
    curl http://localhost/health
    ```
 
@@ -156,28 +195,13 @@ If you have a domain name (e.g., balashan.dev):
    cd ~/portfolio
    docker pull ghcr.io/yourusername/myportfolio:latest
    docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
-   docker-compose down
-   docker-compose up -d
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod down
+   docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
    ```
 
 2. **Verify**
    ```bash
-   docker-compose logs -f portfolio
-   ```
-
-**Alternative (If building on VPS from source):**
-
-1. **Pull latest changes**
-   ```bash
-   cd ~/portfolio
-   git pull origin main
-   ```
-
-2. **Rebuild and restart**
-   ```bash
-   docker-compose down
-   docker-compose build --no-cache
-   docker-compose up -d
+   docker compose logs -f portfolio
    ```
 
 ### Using Deployment Script
@@ -412,33 +436,40 @@ Docker Compose acts as your process manager (like PM2):
 ## 📚 Useful Commands Reference
 
 ```bash
-# Build and start
-docker-compose up -d --build
+# Local Development (using compose.sh)
+./compose.sh local up -d          # Build and start
+./compose.sh local down            # Stop
+./compose.sh local logs -f         # View logs
+./compose.sh local ps              # List containers
 
-# Stop
-docker-compose down
+# Local Development (direct docker compose)
+docker compose up -d --build       # Build and start
+docker compose down                # Stop
+docker compose logs -f portfolio   # View logs
+docker compose exec portfolio sh   # Execute command in container
 
-# View logs
-docker-compose logs -f portfolio
+# Production (VPS - using override files)
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod down
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod logs -f
 
-# Execute command in container
-docker-compose exec portfolio sh
+# Update application (local)
+git pull && ./compose.sh local up -d --build
 
-# Scale (if needed in future)
-docker-compose up -d --scale portfolio=2
+# Update application (production - VPS)
+docker pull ghcr.io/yourusername/myportfolio:latest
+docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
 
-# Clean up unused images
-docker image prune -af
-
-# System cleanup
-docker system prune -a --volumes
-
-# Update application
-git pull && docker-compose up -d --build
+# Clean up
+docker image prune -af             # Clean up unused images
+docker system prune -a --volumes   # System cleanup
 
 # Health check
 curl http://localhost/health
 ```
+
+**See [COMPOSE_GUIDE.md](./COMPOSE_GUIDE.md) for more detailed usage instructions.**
 
 ## 🌐 Access Points
 
@@ -451,10 +482,10 @@ curl http://localhost/health
 
 If you encounter issues:
 
-1. Check logs: `docker-compose logs portfolio`
-2. Verify container status: `docker-compose ps`
+1. Check logs: `./compose.sh local logs` or `docker compose logs portfolio`
+2. Verify container status: `./compose.sh local ps` or `docker compose ps`
 3. Test health endpoint: `curl http://localhost/health`
-4. Review this documentation
+4. Review this documentation and [COMPOSE_GUIDE.md](./COMPOSE_GUIDE.md)
 
 ---
 

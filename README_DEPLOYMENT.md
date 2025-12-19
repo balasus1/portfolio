@@ -21,7 +21,7 @@
 │  │  docker-compose.yml  +  nginx.conf  (ONLY!)     │  │     │
 │  │                                                  │  │     │
 │  │  docker pull ghcr.io/username/repo:latest       │  │<────┘
-│  │  docker-compose up -d                           │  │
+│  │  docker compose up -d (with override files)     │  │
 │  └──────────────────────────────────────────────────┘  │
 │                                                         │
 │  NO source code, NO Dockerfile, NO package.json        │
@@ -30,11 +30,21 @@
 
 ## 📁 What's on VPS?
 
-**Only 2 files needed:**
-1. `~/portfolio/docker-compose.yml` - Container configuration
+**Only 2-3 files needed:**
+1. `~/portfolio/docker-compose.yml` - Container configuration (or use production override)
 2. `~/portfolio/nginx.conf` - Nginx configuration
+3. `~/portfolio/.env.prod` (optional) - Production environment variables
 
 **That's it!** No Git, no source code, no build tools!
+
+## 🐳 Docker Configuration
+
+This project uses a **unified docker-compose.yml** that works for both local and production:
+
+- **Local Development**: Builds from source using `./compose.sh local`
+- **Production (VPS)**: Pulls from registry using `docker-compose.prod.yml` override
+
+See [COMPOSE_GUIDE.md](./COMPOSE_GUIDE.md) for detailed usage instructions.
 
 ## 🔄 How Updates Work
 
@@ -47,7 +57,9 @@
    - SSH to VPS and runs:
      ```bash
      docker pull ghcr.io/yourusername/myportfolio:latest
-     docker-compose down && docker-compose up -d
+     docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
+     docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod down
+     docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
      ```
 
 ### Manual
@@ -55,10 +67,16 @@
 On VPS:
 ```bash
 cd ~/portfolio
+
+# Method 1: Using production override file (recommended)
 docker pull ghcr.io/yourusername/myportfolio:latest
 docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
-docker-compose down
-docker-compose up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod down
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# Method 2: Direct docker compose (if using .env.prod)
+docker compose --env-file .env.prod pull
+docker compose --env-file .env.prod up -d
 ```
 
 ## 🎯 Benefits
@@ -95,30 +113,62 @@ echo "YOUR_GITHUB_TOKEN" | docker login ghcr.io -u YOUR_USERNAME --password-stdi
 docker login
 ```
 
-### 3. First Deployment
+### 3. Create Production docker-compose.yml
 
-```bash
-# Update docker-compose.yml with your image name
-# image: ghcr.io/yourusername/myportfolio:latest
+On VPS, create or update `~/portfolio/docker-compose.yml` (GitHub Actions creates this automatically):
 
-# Pull and run
-docker pull ghcr.io/yourusername/myportfolio:latest
-docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
-docker-compose up -d
+```yaml
+# Production docker-compose.yml (uses registry image, no build)
+services:
+  portfolio:
+    image: ghcr.io/yourusername/myportfolio:latest
+    container_name: portfolio-app
+    restart: unless-stopped
+    ports:
+      - "80:80"
+    volumes:
+      - ./logs:/var/log/nginx
+    networks:
+      - portfolio-network
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+
+networks:
+  portfolio-network:
+    driver: bridge
 ```
 
-### 4. Updates
+### 4. First Deployment
+
+```bash
+# Pull and run (using production override file)
+cd ~/portfolio
+docker pull ghcr.io/yourusername/myportfolio:latest
+docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
+
+# OR if .env.prod doesn't exist, create it first with IMAGE_NAME variable
+```
+
+### 5. Updates
 
 GitHub Actions handles it automatically, OR manually:
 
 ```bash
+cd ~/portfolio
 docker pull ghcr.io/yourusername/myportfolio:latest
 docker tag ghcr.io/yourusername/myportfolio:latest portfolio:latest
-docker-compose down && docker-compose up -d
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod down
+docker compose -f docker-compose.yml -f docker-compose.prod.yml --env-file .env.prod up -d
 ```
 
 ## 📚 Documentation Files
 
+- **[COMPOSE_GUIDE.md](./COMPOSE_GUIDE.md)** - Docker Compose mode switching (local/prod) with compose.sh
 - **[VPS_SETUP.md](./VPS_SETUP.md)** - Detailed VPS setup without Git repo
 - **[DEPLOYMENT.md](./DEPLOYMENT.md)** - Complete deployment guide
 - **[.github/workflows/deploy.yml](./.github/workflows/deploy.yml)** - CI/CD automation

@@ -179,11 +179,20 @@ For GitHub Actions automation:
 
 1. Go to: Repository → Settings → Secrets and variables → Actions
 2. Add:
-   - `VPS_HOST`: `148.113.44.73`
+   - `VPS_HOST`: `148.113.44.73` ⚠️ **Must be IP address, not domain name** (Cloudflare doesn't proxy SSH/port 22)
    - `VPS_USER`: `ubuntu`
    - `VPS_SSH_KEY`: Your private SSH key content
 
-`GITHUB_TOKEN` is automatically provided by GitHub Actions.
+**About `GITHUB_TOKEN`:**
+- ✅ **DO NOT create this secret manually** - it's automatically provided by GitHub Actions
+- ✅ Automatically available in all workflows as `${{ secrets.GITHUB_TOKEN }}`
+- ✅ Works for pushing to GitHub Container Registry (GHCR) within GitHub Actions
+- ⚠️ **Note:** If your Docker image is in a **private** package, the VPS login (line 116) might fail because `GITHUB_TOKEN` only works within GitHub Actions. In that case:
+  - Create a **Personal Access Token (PAT)** with `read:packages` permission
+  - Add it as a secret named `GHCR_PAT` 
+  - Update the workflow to use `${{ secrets.GHCR_PAT }}` instead of `GITHUB_TOKEN` for VPS login
+
+**Important:** If `VPS_HOST` is set to a domain name (e.g., `balashan.dev`), SSH connections will fail because Cloudflare only proxies HTTP/HTTPS traffic (ports 80, 443), not SSH traffic (port 22).
 
 ## 💡 Key Points
 

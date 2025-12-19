@@ -66,8 +66,9 @@ jobs:
               networks:
                 - portfolio-network
               # Docker Compose healthcheck configuration (valid keyword)
+              # Note: Healthcheck uses localhost because it runs inside the container
               healthcheck:
-                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://balashan.dev/health"]
+                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
                 interval: 30s
                 timeout: 3s
                 retries: 3
@@ -84,6 +85,8 @@ jobs:
       
       # Note: VPS_HOST, VPS_USER, and VPS_SSH_KEY are custom secrets that must be configured
       # in Repository Settings → Secrets and variables → Actions
+      # IMPORTANT: VPS_HOST must be the IP address (e.g., 148.113.44.73), NOT the domain name
+      # because Cloudflare only proxies HTTP/HTTPS traffic, not SSH (port 22)
       # Linter warnings about these secrets are expected and can be ignored
       
       - name: Deploy configuration files to VPS
@@ -110,6 +113,9 @@ jobs:
             mv docker-compose.prod.yml docker-compose.yml || true
             
             # Log in to GitHub Container Registry
+            # Note: If package is private, you may need a Personal Access Token (PAT) instead of GITHUB_TOKEN
+            # GITHUB_TOKEN only works within GitHub Actions environment, not on external VPS
+            # For public packages, login may not be required
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin || true
             
             # Pull latest image
@@ -143,4 +149,4 @@ jobs:
             docker-compose logs --tail=30 portfolio
             echo ""
             echo "🔍 Health check:"
-            curl -f http://balashan.dev/health && echo "✅ Health check passed" || echo "⚠️ Health check failed"
+            curl -f http://localhost/health && echo "✅ Health check passed" || echo "⚠️ Health check failed"

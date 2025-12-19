@@ -176,7 +176,7 @@ const Footer = () => {
               textShadow: "0 1px 3px rgba(0,0,0,0.9)",
             }}
           >
-            Built with <Heart className="w-3.5 h-3.5 md:w-4 md:h-4 text-destructive fill-destructive" /> using React & Tailwind
+            #forRemoteWork #loveMyWork
           </p>
         </div>
       </div>

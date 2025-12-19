@@ -83,6 +83,8 @@
     height: 100%;
     margin: 0;
     padding: 0;
+    /* Fix for initial scrollbar issue */
+    position: relative;
   }
 
   body {
@@ -101,6 +103,8 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     position: relative;
+    /* Fix for initial scrollbar rendering issue */
+    height: auto;
   }
 
   /* Root container fixes */
@@ -167,6 +171,15 @@
     box-sizing: border-box;
   }
 
+  /* When animations disabled (default), show all sections immediately */
+  /* This is the default state - no animations, no scroll issues */
+  .no-animations section[id],
+  section[id]:not(.animations-enabled) {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
   /* Apply scroll animations to all sections when animations are enabled */
   .animations-enabled section[id] {
     opacity: 0;
@@ -178,12 +191,6 @@
   .animations-enabled section[id].section-visible {
     opacity: 1;
     transform: translateY(0);
-  }
-
-  /* When animations disabled, show all sections immediately */
-  .no-animations section[id] {
-    opacity: 1 !important;
-    transform: none !important;
   }
 
   /* Global fix: Prevent vertical scrollbars on all section containers and wrappers */
@@ -516,4 +523,46 @@ html {
 
 ::-webkit-scrollbar-thumb:hover {
   background: hsl(var(--primary) / 0.5);
+}
+
+/* Fix for initial scrollbar visibility issue - ensure scrollbar renders correctly */
+html,
+body {
+  /* Force scrollbar to render properly on initial load */
+  scrollbar-gutter: stable;
+}
+
+/* Ensure proper scrolling on initial page load */
+@supports (scrollbar-gutter: stable) {
+  html {
+    scrollbar-gutter: stable;
+  }
+  
+  body {
+    scrollbar-gutter: stable;
+    /* Prevent layout shift from scrollbar */
+    overflow-y: scroll;
+  }
+}
+
+/* Fix for sections initial animation causing scroll issues */
+.animations-enabled section[id] {
+  /* Ensure sections don't interfere with page scroll on initial load */
+  will-change: opacity, transform;
+}
+
+/* Fix for initial scrollbar issue - make first section visible immediately */
+.animations-enabled section[id]:first-of-type {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Ensure page is scrollable immediately */
+.root-container {
+  min-height: 100vh;
+  height: auto;
+  overflow-y: visible;
+  /* Fix for scrollbar appearing but not functional */
+  display: block;
+  position: relative;
 }

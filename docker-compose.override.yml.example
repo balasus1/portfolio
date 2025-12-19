@@ -1,0 +1,16 @@
+# Example override file for production
+# Copy this to docker-compose.override.yml and uncomment/modify as needed
+# Docker Compose automatically uses docker-compose.override.yml if it exists
+
+# version: '3.8'
+# 
+# services:
+#   portfolio:
+#     # Override to use registry image instead of building
+#     image: ghcr.io/balasus1/myportfolio:latest
+#     build: null  # Disable build
+#     
+#     # Production-specific settings
+#     ports:
+#       - "80:80"
+

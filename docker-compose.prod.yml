@@ -1,0 +1,26 @@
+# Production docker-compose override
+# Usage: docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+# 
+# This file extends docker-compose.yml and overrides settings for production
+# No source code or Dockerfile needed when using this!
+#
+# Note: We omit the 'build' key entirely - when both files are merged,
+# the image from this file takes precedence and Docker Compose won't build.
+
+# Note: version is obsolete in Docker Compose V2, removed for compatibility
+
+services:
+  portfolio:
+    # Use image from registry (no build)
+    # This overrides the build configuration from docker-compose.yml
+    image: ${IMAGE_NAME:-ghcr.io/balasus1/myportfolio:latest}
+    
+    # Production-optimized resource limits
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M

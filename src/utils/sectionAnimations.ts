@@ -10,10 +10,14 @@ export const useSectionAnimations = () => {
 
   useEffect(() => {
     if (!animationsEnabled) {
-      // When animations disabled, ensure all sections are visible
+      // When animations disabled (default), ensure all sections are visible immediately
+      // This prevents scroll issues on first load - all content appears without animation
       const sections = document.querySelectorAll("section[id]");
       sections.forEach((section) => {
         section.classList.add("section-visible");
+        // Force visibility to prevent any scroll calculation issues
+        section.style.opacity = "1";
+        section.style.transform = "none";
       });
       return;
     }
@@ -35,6 +39,16 @@ export const useSectionAnimations = () => {
 
     // Observe all sections with IDs
     const sections = document.querySelectorAll("section[id]");
+    
+    // Make first section (hero) visible immediately to prevent scroll issues
+    if (sections.length > 0) {
+      const firstSection = sections[0];
+      firstSection.classList.add("section-visible");
+      // Also ensure it's fully visible to fix scrollbar issue
+      firstSection.style.opacity = "1";
+      firstSection.style.transform = "none";
+    }
+    
     sections.forEach((section) => {
       observer.observe(section);
     });

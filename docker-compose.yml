@@ -1,0 +1,79 @@
+# Unified Docker Compose configuration
+# Note: version is obsolete in Docker Compose V2, removed for compatibility
+# Switch between local and production modes using environment variables
+# 
+# Local mode (default):
+#   docker-compose up -d
+#   or
+#   DEPLOY_MODE=local docker-compose up -d
+#
+# Production mode:
+#   DEPLOY_MODE=prod IMAGE_NAME=ghcr.io/balasus1/myportfolio:latest docker-compose up -d
+#   or set in .env file:
+#   DEPLOY_MODE=prod
+#   IMAGE_NAME=ghcr.io/balasus1/myportfolio:latest
+
+services:
+  portfolio:
+    # Dynamic configuration based on DEPLOY_MODE
+    # When DEPLOY_MODE=prod: uses image from registry
+    # When DEPLOY_MODE=local or not set: builds from source
+    image: ${IMAGE_NAME:-portfolio:latest}
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - NODE_ENV=${NODE_ENV:-production}
+    
+    container_name: portfolio-app
+    restart: unless-stopped
+    
+    ports:
+      - "${PORT_HTTP:-80}:80"
+      # HTTPS port only needed for production with SSL
+      # Uncomment if you have SSL certificates set up
+      # - "${PORT_HTTPS:-443}:443"
+    
+    volumes:
+      - ./logs:/var/log/nginx
+      - ./ssl:/etc/nginx/ssl:ro
+    
+    networks:
+      - portfolio-network
+    
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 3s
+      retries: 3
+      start_period: 10s
+    
+    labels:
+      - "com.docker.compose.project=portfolio"
+      - "com.docker.compose.service=portfolio"
+    
+    # Resource limits (optional but recommended)
+    deploy:
+      resources:
+        limits:
+          cpus: ${CPU_LIMIT:-1}
+          memory: ${MEMORY_LIMIT:-512M}
+        reservations:
+          cpus: ${CPU_RESERVATION:-0.25}
+          memory: ${MEMORY_RESERVATION:-256M}
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    
+    # Environment variables for the container (if needed)
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+
+networks:
+  portfolio-network:
+    driver: bridge
+    name: portfolio-network

@@ -12,10 +12,11 @@ const AnimationContext = createContext<AnimationContextType | undefined>(undefin
 const STORAGE_KEY = "portfolio-animations-enabled";
 
 export const AnimationProvider = ({ children }: { children: ReactNode }) => {
-  // Check localStorage first, default to true
+  // Check localStorage first, default to false (animations disabled by default)
+  // This prevents scroll issues on first load - users can enable if they want
   const [animationsEnabled, setAnimationsEnabled] = useState(() => {
     const stored = localStorage.getItem(STORAGE_KEY);
-    return stored ? JSON.parse(stored) : true;
+    return stored ? JSON.parse(stored) : false;
   });
   
   const [isLowBandwidth, setIsLowBandwidth] = useState(false);
@@ -26,7 +27,8 @@ export const AnimationProvider = ({ children }: { children: ReactNode }) => {
       const lowBandwidth = await detectLowBandwidth();
       setIsLowBandwidth(lowBandwidth);
       
-      // Auto-disable animations if low bandwidth and user hasn't manually set preference
+      // If low bandwidth detected and no user preference set, ensure animations stay disabled
+      // (They're already disabled by default, but this confirms it)
       if (lowBandwidth && localStorage.getItem(STORAGE_KEY) === null) {
         setAnimationsEnabled(false);
         localStorage.setItem(STORAGE_KEY, "false");

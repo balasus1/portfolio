@@ -13,7 +13,7 @@ services:
   portfolio:
     # Use image from registry (no build)
     # This overrides the build configuration from docker-compose.yml
-    image: ${IMAGE_NAME:-ghcr.io/balasus1/myportfolio:latest}
+    image: ghcr.io/balasus1/portfolio:latest
     
     # Production-optimized resource limits
     deploy:

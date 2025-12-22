@@ -88,6 +88,11 @@ jobs:
       # IMPORTANT: VPS_HOST must be the IP address (e.g., 148.113.44.73), NOT the domain name
       # because Cloudflare only proxies HTTP/HTTPS traffic, not SSH (port 22)
       # Linter warnings about these secrets are expected and can be ignored
+      #
+      # SSH Key Troubleshooting:
+      # - Ensure public key is in VPS ~/.ssh/authorized_keys
+      # - Private key must include BEGIN/END header/footer lines
+      # - Test SSH manually: ssh -i ~/.ssh/key ubuntu@148.113.44.73
       
       - name: Deploy configuration files to VPS
         uses: appleboy/scp-action@v0.1.7
@@ -98,6 +103,7 @@ jobs:
           port: 22
           source: "docker-compose.prod.yml,nginx.conf"
           target: "/home/ubuntu/portfolio"
+          debug: true  # Enable debug output for troubleshooting
       
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3

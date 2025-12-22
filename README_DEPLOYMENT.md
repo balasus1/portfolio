@@ -181,7 +181,44 @@ For GitHub Actions automation:
 2. Add:
    - `VPS_HOST`: `148.113.44.73` ⚠️ **Must be IP address, not domain name** (Cloudflare doesn't proxy SSH/port 22)
    - `VPS_USER`: `ubuntu`
-   - `VPS_SSH_KEY`: Your private SSH key content
+   - `VPS_SSH_KEY`: Your private SSH key content (see setup instructions below)
+
+### SSH Key Setup (Important!)
+
+**Generate and configure SSH key pair:**
+
+```bash
+# 1. Generate SSH key pair (if you don't have one)
+ssh-keygen -t rsa -b 4096 -C "your_email@example.com" -f ~/.ssh/github_actions_vps
+
+# 2. Copy PUBLIC key to VPS authorized_keys
+ssh-copy-id -i ~/.ssh/github_actions_vps.pub ubuntu@148.113.44.73
+
+# OR manually add the public key to VPS:
+cat ~/.ssh/github_actions_vps.pub
+# Then on VPS, run:
+# mkdir -p ~/.ssh
+# echo "YOUR_PUBLIC_KEY_CONTENT" >> ~/.ssh/authorized_keys
+# chmod 600 ~/.ssh/authorized_keys
+# chmod 700 ~/.ssh
+
+# 3. Test SSH connection works
+ssh -i ~/.ssh/github_actions_vps ubuntu@148.113.44.73
+
+# 4. Copy PRIVATE key content to GitHub Secret
+cat ~/.ssh/github_actions_vps
+# Copy the ENTIRE output including:
+# -----BEGIN OPENSSH PRIVATE KEY----- (or -----BEGIN RSA PRIVATE KEY-----)
+# ... key content ...
+# -----END OPENSSH PRIVATE KEY----- (or -----END RSA PRIVATE KEY-----)
+# Paste this into GitHub Secret VPS_SSH_KEY
+```
+
+**⚠️ Common Issues:**
+- **"unable to authenticate" error**: Make sure the PUBLIC key is in VPS `~/.ssh/authorized_keys`
+- **Key format error**: Ensure the private key includes header/footer lines (`-----BEGIN...` and `-----END...`)
+- **No newline issues**: Copy the entire key including all lines
+- **Wrong user**: Verify `VPS_USER` matches the actual username on VPS (usually `ubuntu` for Ubuntu servers)
 
 **About `GITHUB_TOKEN`:**
 - ✅ **DO NOT create this secret manually** - it's automatically provided by GitHub Actions

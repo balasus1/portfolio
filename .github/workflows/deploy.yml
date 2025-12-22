@@ -8,7 +8,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository }}
+  IMAGE_NAME: ${{ github.repository_owner }}/${{ github.repository }}
 
 jobs:
   build-and-deploy:
@@ -132,11 +132,11 @@ jobs:
             
             # Stop old container
             echo "🛑 Stopping old container..."
-            docker-compose down || true
+            docker compose down || true
             
             # Start new container with latest image
             echo "🚀 Starting new container..."
-            docker-compose up -d
+            docker compose up -d
             
             # Clean up old/unused images
             echo "🧹 Cleaning up old images..."
@@ -149,10 +149,16 @@ jobs:
             # Verify deployment
             echo ""
             echo "📊 Container status:"
-            docker-compose ps
+            docker compose ps
             echo ""
             echo "📝 Recent logs:"
-            docker-compose logs --tail=30 portfolio
+            docker compose logs --tail=30 portfolio
             echo ""
             echo "🔍 Health check:"
             curl -f http://localhost/health && echo "✅ Health check passed" || echo "⚠️ Health check failed"
+                        echo ""
+            echo "🌍 Application URLs:"
+            echo "------------------------------------"
+            echo "➡️  Portfolio URL: https://portfolio.balashan.dev"
+            echo "➡️  Fallback IP URL: http://${{ secrets.VPS_HOST }}"
+            echo "------------------------------------"

@@ -109,7 +109,7 @@ jobs:
             
             # Pull Traefik image (if not already present)
             echo "📦 Ensuring Traefik image is available..."
-            docker pull traefik:v2.10 || true
+            docker pull traefik:v3.0 || true
             
             # Stop old containers (both Traefik and portfolio)
             echo "🛑 Stopping old containers..."

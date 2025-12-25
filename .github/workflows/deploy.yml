@@ -51,13 +51,38 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
       
-      - name: Update docker-compose.traefik.yml with correct image
+      - name: Create production docker-compose.yml
         run: |
-          # Update the portfolio service image in docker-compose.traefik.yml
-          sed -i "s|image: ghcr.io/balasus1/portfolio:latest|image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest|g" docker-compose.traefik.yml
-          # Also update in build section if present (for local builds, will be overridden by image)
-          sed -i "s|ghcr.io/balasus1/portfolio:latest|${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest|g" docker-compose.traefik.yml
-          echo "✅ Updated docker-compose.traefik.yml with image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest"
+          cat > docker-compose.prod.yml <<EOF
+          services:
+            portfolio:
+              image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
+              container_name: portfolio-app
+              restart: unless-stopped
+              ports:
+                - "80:80"
+              volumes:
+                - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
+                - ./logs:/var/log/nginx
+              networks:
+                - portfolio-network
+              healthcheck:
+                test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost/health"]
+                interval: 30s
+                timeout: 3s
+                retries: 3
+                start_period: 10s
+              logging:
+                driver: "json-file"
+                options:
+                  max-size: "10m"
+                  max-file: "3"
+              environment:
+                - NODE_ENV=production
+          networks:
+            portfolio-network:
+              driver: bridge
+          EOF
       
       # Note: VPS_HOST, VPS_USER, and VPS_SSH_KEY are custom secrets that must be configured
       # in Repository Settings → Secrets and variables → Actions
@@ -70,18 +95,18 @@ jobs:
       # - Private key must include BEGIN/END header/footer lines
       # - Test SSH manually: ssh -i ~/.ssh/key ubuntu@148.113.44.73
       
-      - name: Deploy Traefik configuration files to VPS
+      - name: Deploy configuration files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VPS_HOST }}
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: 22
-          source: "traefik.yml,dynamic.yml,docker-compose.traefik.yml,nginx.conf"
+          source: "docker-compose.prod.yml,nginx.conf"
           target: "/home/ubuntu/portfolio"
           debug: true  # Enable debug output for troubleshooting
       
-      - name: Deploy to VPS with Traefik
+      - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -91,9 +116,11 @@ jobs:
           script: |
             cd /home/ubuntu/portfolio
             
-            # Create letsencrypt directory if it doesn't exist (required for Traefik SSL certificates)
-            mkdir -p letsencrypt
-            chmod 755 letsencrypt
+            # Rename to docker-compose.yml (docker-compose uses this name by default)
+            mv docker-compose.prod.yml docker-compose.yml || true
+            
+            # Create necessary directories
+            mkdir -p logs
             
             # Log in to GitHub Container Registry
             # Note: If package is private, you may need a Personal Access Token (PAT) instead of GITHUB_TOKEN
@@ -101,57 +128,41 @@ jobs:
             # For public packages, login may not be required
             echo "${{ secrets.GITHUB_TOKEN }}" | docker login ${{ env.REGISTRY }} -u ${{ github.actor }} --password-stdin || true
             
-            # Pull latest portfolio image
+            # Pull latest image
             echo "📦 Pulling latest portfolio image from registry..."
             docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest || {
               echo "⚠️ Failed to pull image. Using existing image if available."
             }
             
-            # Pull Traefik image (if not already present)
-            echo "📦 Ensuring Traefik image is available..."
-            docker pull traefik:latest || true
-            
-            # Stop old containers (both Traefik and portfolio)
+            # Stop old containers
             echo "🛑 Stopping old containers..."
-            docker compose -f docker-compose.traefik.yml down || true
-            # Also stop any old docker-compose.yml setup if exists
             docker compose down || true
             
-            # Start new containers with Traefik
-            echo "🚀 Starting containers with Traefik..."
-            docker compose -f docker-compose.traefik.yml up -d
+            # Start new container
+            echo "🚀 Starting new container..."
+            docker compose up -d
             
             # Clean up old/unused images
             echo "🧹 Cleaning up old images..."
             docker image prune -af --filter "until=168h" || true
             
-            # Wait for containers to start
-            echo "⏳ Waiting for containers to be ready..."
-            sleep 15
+            # Wait for container to start
+            echo "⏳ Waiting for container to be healthy..."
+            sleep 10
             
             # Verify deployment
             echo ""
             echo "📊 Container status:"
-            docker compose -f docker-compose.traefik.yml ps
+            docker compose ps
             echo ""
-            echo "📝 Traefik logs (last 20 lines):"
-            docker compose -f docker-compose.traefik.yml logs --tail=20 traefik || echo "⚠️ Traefik logs not available"
-            echo ""
-            echo "📝 Portfolio logs (last 20 lines):"
-            docker compose -f docker-compose.traefik.yml logs --tail=20 portfolio || echo "⚠️ Portfolio logs not available"
+            echo "📝 Recent logs:"
+            docker compose logs --tail=30 portfolio
             echo ""
             echo "🔍 Health check:"
             curl -f http://localhost/health && echo "✅ Health check passed" || echo "⚠️ Health check failed (container might still be starting)"
             echo ""
-            echo "🔐 Testing HTTPS redirect:"
-            curl -I http://localhost 2>&1 | head -5 || echo "⚠️ HTTP test failed"
-            echo ""
             echo "🌍 Application URLs:"
             echo "------------------------------------"
-            echo "➡️  Portfolio HTTPS URL: https://portfolio.balashan.dev"
-            echo "➡️  Portfolio HTTP URL (redirects to HTTPS): http://portfolio.balashan.dev"
+            echo "➡️  Portfolio URL: http://portfolio.balashan.dev"
             echo "➡️  Fallback IP URL: http://${{ secrets.VPS_HOST }}"
             echo "------------------------------------"
-            echo ""
-            echo "💡 Note: SSL certificate may take a few minutes to be issued by Let's Encrypt"
-            echo "   Check Traefik logs for certificate status: docker compose -f docker-compose.traefik.yml logs traefik"

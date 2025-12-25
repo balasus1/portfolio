@@ -1,0 +1,38 @@
+# Traefik Dynamic Configuration
+# This file contains dynamic configuration that can be reloaded without restarting Traefik
+
+# HTTP to HTTPS redirect (already handled in static config, but can be customized here)
+# http:
+#   middlewares:
+#     redirect-to-https:
+#       redirectScheme:
+#         scheme: https
+#         permanent: true
+
+# Additional middlewares can be defined here
+# Example: Security headers
+http:
+  middlewares:
+    security-headers:
+      headers:
+        accessControlAllowMethods:
+          - GET
+          - OPTIONS
+          - PUT
+        accessControlMaxAge: 100
+        hostsProxyHeaders:
+          - "X-Forwarded-Host"
+        referrerPolicy: "same-origin"
+        customRequestHeaders:
+          X-Forwarded-Proto: "https"
+        customResponseHeaders:
+          X-Content-Type-Options: "nosniff"
+          X-Frame-Options: "SAMEORIGIN"
+          X-XSS-Protection: "1; mode=block"
+          Referrer-Policy: "no-referrer-when-downgrade"
+        sslRedirect: true
+        forceSTSHeader: true
+        stsIncludeSubdomains: true
+        stsPreload: true
+        stsSeconds: 31536000
+

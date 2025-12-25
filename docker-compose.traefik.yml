@@ -86,19 +86,15 @@ services:
     labels:
       - "traefik.enable=true"
       
-      # HTTP router (redirects to HTTPS automatically via entrypoint configuration)
-      - "traefik.http.routers.portfolio.rule=Host(`portfolio.balashan.dev`) || Host(`balashan.dev`) || Host(`www.balashan.dev`)"
-      - "traefik.http.routers.portfolio.entrypoints=web"
-      
-      # HTTPS router
+      # HTTPS router (primary router for handling requests)
       - "traefik.http.routers.portfolio-secure.rule=Host(`portfolio.balashan.dev`) || Host(`balashan.dev`) || Host(`www.balashan.dev`)"
       - "traefik.http.routers.portfolio-secure.entrypoints=websecure"
       - "traefik.http.routers.portfolio-secure.tls.certresolver=letsencrypt"
       - "traefik.http.routers.portfolio-secure.middlewares=security-headers"
+      - "traefik.http.routers.portfolio-secure.service=portfolio"
       
       # Service configuration
       - "traefik.http.services.portfolio.loadbalancer.server.port=80"
-      - "traefik.http.services.portfolio.loadbalancer.server.scheme=http"
       
       # Docker compose labels
       - "com.docker.compose.project=portfolio"

@@ -71,7 +71,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        className="resume-modal-backdrop fixed inset-0 z-[100] flex items-center justify-center p-4"
+        className="resume-modal-backdrop inset-0 z-[100] flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
         style={{
           background: "radial-gradient(circle at center, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.9) 100%)",
           backdropFilter: "blur(8px)",
@@ -110,13 +110,13 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
           animate={{ scale: 1, opacity: 1, y: 0, rotateX: 0 }}
           exit={{ scale: 0.8, opacity: 0, y: 50, rotateX: 15 }}
           transition={{ type: "spring", damping: 20, stiffness: 300 }}
-          className="relative w-full max-w-md mx-4"
+          className="relative w-full max-w-md my-auto"
           style={{ perspective: "1000px" }}
           onClick={(e) => e.stopPropagation()}
         >
           {/* Gaming-style menu container with enhanced glow */}
           <div
-            className="resume-modal-content relative overflow-hidden rounded-2xl border-2"
+            className="resume-modal-content relative overflow-hidden rounded-xl sm:rounded-2xl border-2 max-h-[90vh] sm:max-h-[85vh] flex flex-col"
             style={{
               background: "linear-gradient(135deg, hsl(var(--card) / 0.85) 0%, hsl(var(--card) / 0.65) 50%, hsl(var(--card) / 0.85) 100%)",
               backdropFilter: "blur(24px)",
@@ -175,7 +175,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
             ))}
 
             {/* Header with gaming style */}
-            <div className="resume-modal-header relative p-4 sm:p-6 border-b" style={{ borderColor: "hsl(var(--primary) / 0.2)" }}>
+            <div className="resume-modal-header relative p-4 sm:p-6 border-b flex-shrink-0" style={{ borderColor: "hsl(var(--primary) / 0.2)" }}>
               {/* Shimmer overlay */}
               <div
                 className="absolute inset-0 opacity-30"
@@ -231,7 +231,7 @@ const ResumeDownloadMenu = ({ onClose }: { onClose: () => void }) => {
             </div>
 
             {/* Menu Options */}
-            <div className="p-3 sm:p-4 space-y-3">
+            <div className="p-3 sm:p-4 space-y-3 overflow-y-auto flex-1 min-h-0">
               {resumeFiles.map((file, index) => (
                 <motion.button
                   key={file.path}

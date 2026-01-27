@@ -75,7 +75,6 @@
   html {
     scroll-behavior: smooth;
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
     overflow-x: hidden;
     overflow-y: auto;
     width: 100%;
@@ -83,7 +82,6 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    /* Fix for initial scrollbar issue */
     position: relative;
   }
 
@@ -91,7 +89,6 @@
     @apply bg-background text-foreground font-body antialiased;
     font-family: var(--font-body);
     -webkit-overflow-scrolling: touch;
-    overscroll-behavior-y: contain;
     overflow-x: hidden;
     overflow-y: auto;
     width: 100%;
@@ -103,8 +100,33 @@
     -moz-osx-font-smoothing: grayscale;
     text-rendering: optimizeLegibility;
     position: relative;
-    /* Fix for initial scrollbar rendering issue */
     height: auto;
+  }
+
+  /* Mobile-specific: Allow scrolling without overscroll restrictions */
+  @media (max-width: 768px) {
+    html {
+      overscroll-behavior-y: auto;
+      height: auto;
+      min-height: 100%;
+    }
+
+    body {
+      overscroll-behavior-y: auto;
+      touch-action: pan-y;
+      -webkit-overflow-scrolling: touch;
+    }
+  }
+
+  /* Desktop: Prevent scroll chaining */
+  @media (min-width: 769px) {
+    html {
+      overscroll-behavior-y: contain;
+    }
+
+    body {
+      overscroll-behavior-y: contain;
+    }
   }
 
   /* Root container fixes */
@@ -119,13 +141,28 @@
     position: relative;
   }
 
-  /* Prevent scroll chaining on mobile */
+  /* Main content container */
   main {
-    overscroll-behavior-y: contain;
     position: relative;
     width: 100%;
     max-width: 100%;
     overflow-x: hidden;
+    overflow-y: visible;
+  }
+
+  /* Mobile-specific: Allow main to scroll */
+  @media (max-width: 768px) {
+    main {
+      overscroll-behavior-y: auto;
+      touch-action: pan-y;
+    }
+  }
+
+  /* Desktop: Prevent scroll chaining */
+  @media (min-width: 769px) {
+    main {
+      overscroll-behavior-y: contain;
+    }
   }
 
   /* Fix for mobile fixed header - iOS Safari compatibility */
@@ -541,7 +578,15 @@ body {
   body {
     scrollbar-gutter: stable;
     /* Prevent layout shift from scrollbar */
-    overflow-y: scroll;
+    overflow-y: auto;
+  }
+
+  /* Mobile: Ensure scrolling works */
+  @media (max-width: 768px) {
+    body {
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
   }
 }
 
@@ -562,7 +607,23 @@ body {
   min-height: 100vh;
   height: auto;
   overflow-y: visible;
-  /* Fix for scrollbar appearing but not functional */
+  overflow-x: hidden;
   display: block;
   position: relative;
+}
+
+/* Mobile-specific: Ensure root container allows scrolling */
+@media (max-width: 768px) {
+  .root-container {
+    overflow-y: visible;
+    overflow-x: hidden;
+    touch-action: pan-y;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .main-content {
+    overflow-y: visible;
+    overflow-x: hidden;
+    touch-action: pan-y;
+  }
 }

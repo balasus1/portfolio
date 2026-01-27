@@ -61,9 +61,12 @@ jobs:
               restart: unless-stopped
               ports:
                 - "80:80"
+                - "443:443"
               volumes:
                 - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
                 - ./logs:/var/log/nginx
+                - ./certbot/conf:/etc/letsencrypt:ro
+                - ./certbot/www:/var/www/certbot:ro
               networks:
                 - portfolio-network
               healthcheck:
@@ -83,18 +86,6 @@ jobs:
             portfolio-network:
               driver: bridge
           EOF
-      
-      # Note: VPS_HOST, VPS_USER, and VPS_SSH_KEY are custom secrets that must be configured
-      # in Repository Settings → Secrets and variables → Actions
-      # IMPORTANT: VPS_HOST must be the IP address (e.g., 148.113.44.73), NOT the domain name
-      # because Cloudflare only proxies HTTP/HTTPS traffic, not SSH (port 22)
-      # Linter warnings about these secrets are expected and can be ignored
-      #
-      # SSH Key Troubleshooting:
-      # - Ensure public key is in VPS ~/.ssh/authorized_keys
-      # - Private key must include BEGIN/END header/footer lines
-      # - Test SSH manually: ssh -i ~/.ssh/key ubuntu@148.113.44.73
-      
       - name: Deploy configuration files to VPS
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -120,7 +111,18 @@ jobs:
             mv docker-compose.prod.yml docker-compose.yml || true
             
             # Create necessary directories
-            mkdir -p logs
+            mkdir -p logs certbot/conf certbot/www
+            
+            # Check if SSL certificates exist, if not, provide instructions
+            if [ ! -d "certbot/conf/portfolio.balashan.dev" ]; then
+              echo "⚠️  SSL certificates not found!"
+              echo "📝 Please run the following on your VPS to get certificates:"
+              echo "   sudo certbot certonly --standalone -d portfolio.balashan.dev --email bala.s0027@gmail.com --agree-tos --non-interactive"
+              echo "   sudo cp -r /etc/letsencrypt/live/portfolio.balashan.dev ~/portfolio/certbot/conf/"
+              echo "   sudo chown -R \$USER:\$USER ~/portfolio/certbot"
+              echo ""
+              echo "⚠️  Starting container without SSL (HTTP only) for now..."
+            fi
             
             # Log in to GitHub Container Registry
             # Note: If package is private, you may need a Personal Access Token (PAT) instead of GITHUB_TOKEN
@@ -163,6 +165,16 @@ jobs:
             echo ""
             echo "🌍 Application URLs:"
             echo "------------------------------------"
-            echo "➡️  Portfolio URL: http://portfolio.balashan.dev"
+            echo "➡️  Portfolio HTTPS URL: https://portfolio.balashan.dev"
+            echo "➡️  Portfolio HTTP URL (redirects to HTTPS): http://portfolio.balashan.dev"
             echo "➡️  Fallback IP URL: http://${{ secrets.VPS_HOST }}"
             echo "------------------------------------"
+            echo ""
+            # Test HTTPS if certificates exist
+            if [ -d "certbot/conf/portfolio.balashan.dev" ]; then
+              echo "🔐 Testing HTTPS connection..."
+              curl -I https://portfolio.balashan.dev 2>&1 | head -5 || echo "⚠️  HTTPS test failed (certificate might need renewal)"
+            else
+              echo "⚠️  SSL certificates not configured. Site will work on HTTP only."
+              echo "   Run: sudo certbot certonly --standalone -d portfolio.balashan.dev"
+            fi

@@ -42,7 +42,7 @@
     --gradient-hero: linear-gradient(180deg, hsl(222 47% 6%) 0%, hsl(222 47% 10%) 100%);
     --gradient-card: linear-gradient(145deg, hsl(222 47% 12%) 0%, hsl(222 47% 8%) 100%);
     --gradient-glow: radial-gradient(circle, hsl(174 72% 56% / 0.15) 0%, transparent 70%);
-    
+
     --shadow-glow: 0 0 60px hsl(174 72% 56% / 0.3);
     --shadow-card: 0 8px 32px hsl(0 0% 0% / 0.3);
     --shadow-elevated: 0 20px 60px hsl(0 0% 0% / 0.4);
@@ -66,229 +66,162 @@
   }
 }
 
-@layer base {
-  * {
-    border-color: hsl(var(--border));
-    -webkit-overflow-scrolling: touch;
-  }
+/* ============================================
+   CRITICAL: Scroll Fix - Simple & Clean
+   ============================================ */
 
-  html {
-    scroll-behavior: smooth;
+/* Global box-sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* Base scroll setup - keep it simple */
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: scroll;
+  /* Always show scrollbar to prevent layout shift */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  overflow-x: hidden;
+  overflow-y: visible;
+  /* Let html handle scrolling */
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Root element */
+#root {
+  min-height: 100vh;
+  overflow: visible;
+  /* Critical: don't block scroll */
+}
+
+/* Root container in Index.tsx */
+.root-container {
+  min-height: 100vh;
+  overflow: visible;
+  /* Critical: don't block scroll */
+}
+
+/* Main content */
+.main-content {
+  overflow: visible;
+  /* Critical: don't block scroll */
+}
+
+/* Mobile touch scrolling */
+@media (max-width: 768px) {
+
+  html,
+  body {
     -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    overflow-y: auto;
-    width: 100%;
-    max-width: 100vw;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-    position: relative;
   }
 
   body {
-    @apply bg-background text-foreground font-body antialiased;
-    font-family: var(--font-body);
-    -webkit-overflow-scrolling: touch;
-    overflow-x: hidden;
-    overflow-y: auto;
-    width: 100%;
-    max-width: 100vw;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-    position: relative;
-    height: auto;
-  }
-
-  /* Mobile-specific: Allow scrolling without overscroll restrictions */
-  @media (max-width: 768px) {
-    html {
-      overscroll-behavior-y: auto;
-      height: auto;
-      min-height: 100%;
-    }
-
-    body {
-      overscroll-behavior-y: auto;
-      touch-action: pan-y;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
-
-  /* Desktop: Prevent scroll chaining */
-  @media (min-width: 769px) {
-    html {
-      overscroll-behavior-y: contain;
-    }
-
-    body {
-      overscroll-behavior-y: contain;
-    }
-  }
-
-  /* Root container fixes */
-  #root {
-    width: 100%;
-    max-width: 100vw;
-    min-height: 100vh;
-    margin: 0;
-    padding: 0;
-    overflow-x: hidden;
-    overflow-y: visible;
-    position: relative;
-  }
-
-  /* Main content container */
-  main {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: visible;
-  }
-
-  /* Mobile-specific: Allow main to scroll */
-  @media (max-width: 768px) {
-    main {
-      overscroll-behavior-y: auto;
-      touch-action: pan-y;
-    }
-  }
-
-  /* Desktop: Prevent scroll chaining */
-  @media (min-width: 769px) {
-    main {
-      overscroll-behavior-y: contain;
-    }
-  }
-
-  /* Fix for mobile fixed header - iOS Safari compatibility */
-  /* Let Tailwind's fixed class handle positioning, add mobile optimizations */
-  .header-container.fixed {
-    /* Force GPU acceleration for better mobile performance */
-    transform: translate3d(0, 0, 0);
-    -webkit-transform: translate3d(0, 0, 0);
-    will-change: transform;
-    -webkit-backface-visibility: hidden;
-    backface-visibility: hidden;
-  }
-
-  /* Ensure header wrapper doesn't interfere */
-  .header-wrapper {
-    position: relative;
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  /* Root container class */
-  .root-container {
-    width: 100%;
-    max-width: 100vw;
-    overflow-x: hidden;
-    position: relative;
-  }
-
-  /* Main content container */
-  .main-content {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-  }
-
-  /* Prevent all sections from causing horizontal overflow */
-  section {
-    width: 100%;
-    max-width: 100%;
-    overflow-x: hidden;
-    overflow-y: visible;
-    box-sizing: border-box;
-  }
-
-  /* When animations disabled (default), show all sections immediately */
-  /* This is the default state - no animations, no scroll issues */
-  .no-animations section[id],
-  section[id]:not(.animations-enabled) {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-
-  /* Apply scroll animations to all sections when animations are enabled */
-  .animations-enabled section[id] {
-    opacity: 0;
-    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
-    transform: translateY(40px);
-  }
-
-  /* Intersection Observer will add this class via useScrollAnimation hook */
-  .animations-enabled section[id].section-visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
-
-  /* Global fix: Prevent vertical scrollbars on all section containers and wrappers */
-  [class*="-section-container"],
-  [class*="-section-wrapper"],
-  [class*="-wrapper"],
-  [class*="-container"]:not([class*="-card"]):not([class*="glass-card"]):not([class*="resume-modal"]) {
-    overflow: hidden;
-    scroll-behavior: smooth;
-  }
-
-  /* Ensure main wrapper/container patterns don't create scrollbars */
-  .container-custom,
-  .main-content,
-  .root-container {
-    overflow-y: visible !important;
-    overflow-x: hidden;
-  }
-
-  /* Timeline line specific fix - needs visible overflow for animations */
-  .experience-timeline-line {
-    overflow: visible;
-  }
-
-  /* Note: All section containers, wrappers, and grids are now handled by the global rule above */
-
-  /* Ensure all containers respect viewport width */
-  .container-custom {
-    width: 100%;
-    max-width: 100%;
-    box-sizing: border-box;
-    overflow-x: hidden;
-  }
-
-  /* Global box-sizing fix */
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-
-  /* Mobile-specific optimizations for fixed header */
-  @media (max-width: 768px) {
-    .header-container.fixed {
-      /* Reduce backdrop blur on mobile for better performance and stability */
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      /* Ensure it stays fixed on mobile browsers */
-      position: fixed !important;
-      top: 0 !important;
-      left: 0 !important;
-      right: 0 !important;
-      width: 100% !important;
-      max-width: 100% !important;
-    }
-  }
-
-  h1, h2, h3, h4, h5, h6 {
-    font-family: var(--font-heading);
+    touch-action: pan-y;
   }
 }
+
+/* ============================================
+   Typography
+   ============================================ */
+
+@layer base {
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-family: var(--font-heading);
+  }
+
+  * {
+    border-color: hsl(var(--border));
+  }
+}
+
+/* ============================================
+   Sections - Visible by default
+   ============================================ */
+
+section {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-y: visible;
+}
+
+/* Default: All sections visible (no animations) */
+section[id] {
+  opacity: 1;
+  transform: none;
+}
+
+/* When animations are disabled, ensure visibility */
+.no-animations section[id] {
+  opacity: 1 !important;
+  transform: none !important;
+  transition: none !important;
+}
+
+/* When animations enabled, start hidden */
+.animations-enabled section[id] {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+}
+
+/* Visible state for animated sections */
+.animations-enabled section[id].section-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Hero section always visible immediately */
+.animations-enabled section[id]:first-of-type {
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* ============================================
+   Header / Navbar
+   ============================================ */
+
+.header-container {
+  /* Uses Tailwind's fixed class for positioning */
+  position: relative;
+}
+
+.header-wrapper {
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Mobile fixed header optimization */
+@media (max-width: 768px) {
+  .header-container.fixed {
+    transform: translate3d(0, 0, 0);
+    -webkit-transform: translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+  }
+}
+
+/* ============================================
+   Components
+   ============================================ */
 
 @layer components {
   .glass-card {
@@ -325,6 +258,10 @@
   }
 }
 
+/* ============================================
+   Utilities
+   ============================================ */
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
@@ -344,10 +281,17 @@
   }
 }
 
+/* ============================================
+   Keyframe Animations
+   ============================================ */
+
 @keyframes float {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-20px);
   }
@@ -357,9 +301,11 @@
   0% {
     background-position: 0% 50%;
   }
+
   50% {
     background-position: 100% 50%;
   }
+
   100% {
     background-position: 0% 50%;
   }
@@ -370,6 +316,7 @@
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -380,6 +327,7 @@
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -393,12 +341,10 @@
   animation: fade-in 0.8s ease-out forwards;
 }
 
-/* Smooth scroll behavior */
-html {
-  scroll-behavior: smooth;
-}
+/* ============================================
+   Disable animations when preference set
+   ============================================ */
 
-/* Disable animations when no-animations class is present */
 .no-animations *,
 .no-animations *::before,
 .no-animations *::after {
@@ -406,17 +352,33 @@ html {
   animation-delay: 0s !important;
   transition-duration: 0s !important;
   transition-delay: 0s !important;
-  scroll-behavior: auto !important;
 }
 
-/* Scroll-triggered animation classes - Initial states */
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ============================================
+   Scroll Animation Classes
+   ============================================ */
+
 .scroll-animate-up-initial,
 .scroll-animate-down-initial,
 .scroll-animate-left-initial,
 .scroll-animate-right-initial,
 .scroll-animate-fade-initial {
   opacity: 0;
-  will-change: transform, opacity;
 }
 
 .scroll-animate-up-initial {
@@ -435,116 +397,20 @@ html {
   transform: translateX(-40px);
 }
 
-/* Scroll-triggered animation classes - Active states */
 .scroll-animate-up-active,
 .scroll-animate-down-active,
 .scroll-animate-left-active,
 .scroll-animate-right-active,
 .scroll-animate-fade-active {
-  animation: scrollFadeIn 0.6s ease-out forwards;
+  opacity: 1;
+  transform: translateY(0) translateX(0);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
-.scroll-animate-up-active {
-  animation-name: scrollSlideUp;
-}
+/* ============================================
+   Custom Scrollbar
+   ============================================ */
 
-.scroll-animate-down-active {
-  animation-name: scrollSlideDown;
-}
-
-.scroll-animate-left-active {
-  animation-name: scrollSlideLeft;
-}
-
-.scroll-animate-right-active {
-  animation-name: scrollSlideRight;
-}
-
-.scroll-animate-fade-active {
-  animation-name: scrollFadeIn;
-}
-
-/* Animation keyframes */
-@keyframes scrollSlideUp {
-  from {
-    opacity: 0;
-    transform: translateY(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scrollSlideDown {
-  from {
-    opacity: 0;
-    transform: translateY(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scrollSlideLeft {
-  from {
-    opacity: 0;
-    transform: translateX(40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scrollSlideRight {
-  from {
-    opacity: 0;
-    transform: translateX(-40px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
-@keyframes scrollFadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-/* Reduce motion for users who prefer it */
-@media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
-  
-  .scroll-animate-up-active,
-  .scroll-animate-down-active,
-  .scroll-animate-left-active,
-  .scroll-animate-right-active,
-  .scroll-animate-fade-active {
-    animation: none;
-    opacity: 1;
-    transform: none;
-  }
-  
-  .scroll-animate-up-initial,
-  .scroll-animate-down-initial,
-  .scroll-animate-left-initial,
-  .scroll-animate-right-initial,
-  .scroll-animate-fade-initial {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-/* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
 }
@@ -562,68 +428,10 @@ html {
   background: hsl(var(--primary) / 0.5);
 }
 
-/* Fix for initial scrollbar visibility issue - ensure scrollbar renders correctly */
-html,
-body {
-  /* Force scrollbar to render properly on initial load */
-  scrollbar-gutter: stable;
-}
+/* ============================================
+   Timeline specific (needs visible overflow)
+   ============================================ */
 
-/* Ensure proper scrolling on initial page load */
-@supports (scrollbar-gutter: stable) {
-  html {
-    scrollbar-gutter: stable;
-  }
-  
-  body {
-    scrollbar-gutter: stable;
-    /* Prevent layout shift from scrollbar */
-    overflow-y: auto;
-  }
-
-  /* Mobile: Ensure scrolling works */
-  @media (max-width: 768px) {
-    body {
-      overflow-y: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-  }
-}
-
-/* Fix for sections initial animation causing scroll issues */
-.animations-enabled section[id] {
-  /* Ensure sections don't interfere with page scroll on initial load */
-  will-change: opacity, transform;
-}
-
-/* Fix for initial scrollbar issue - make first section visible immediately */
-.animations-enabled section[id]:first-of-type {
-  opacity: 1 !important;
-  transform: none !important;
-}
-
-/* Ensure page is scrollable immediately */
-.root-container {
-  min-height: 100vh;
-  height: auto;
-  overflow-y: visible;
-  overflow-x: hidden;
-  display: block;
-  position: relative;
-}
-
-/* Mobile-specific: Ensure root container allows scrolling */
-@media (max-width: 768px) {
-  .root-container {
-    overflow-y: visible;
-    overflow-x: hidden;
-    touch-action: pan-y;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .main-content {
-    overflow-y: visible;
-    overflow-x: hidden;
-    touch-action: pan-y;
-  }
+.experience-timeline-line {
+  overflow: visible;
 }

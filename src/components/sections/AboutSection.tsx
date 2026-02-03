@@ -111,11 +111,10 @@ const AboutSection = () => {
           {/* Right Card - Education & Certifications */}
           <motion.div
             initial={{ opacity: 0, x: 50 }}
-            className="about-education-card"
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
-            className="relative"
+            className="about-education-card relative"
           >
             <div 
               className="p-8 md:p-10 rounded-xl relative overflow-hidden border-2 h-full"

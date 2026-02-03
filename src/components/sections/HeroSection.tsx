@@ -245,8 +245,7 @@ const HeroSection = () => {
                 href={link.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hero-social-link"
-                className="w-12 h-12 rounded-full glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
+                className="hero-social-link w-12 h-12 rounded-full glass-card flex items-center justify-center text-muted-foreground hover:text-primary hover:border-primary/50 transition-all"
                 whileHover={{ scale: 1.1, y: -4 }}
                 whileTap={{ scale: 0.95 }}
                 aria-label={link.label}

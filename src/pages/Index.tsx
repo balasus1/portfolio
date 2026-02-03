@@ -33,11 +33,11 @@ const Index = () => {
         <link rel="canonical" href="https://balashan.dev" />
       </Helmet>
 
-      <div className="root-container min-h-screen bg-background w-full max-w-full overflow-x-hidden">
+      <div className="root-container min-h-screen bg-background">
         <AnimatedBackground />
         <Navbar />
         
-        <main className="main-content w-full max-w-full overflow-x-hidden">
+        <main className="main-content">
           <HeroSection />
           <AboutSection />
           <StatsSection />

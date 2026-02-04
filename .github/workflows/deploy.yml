@@ -50,6 +50,9 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            VITE_GEMINI_API_KEY=${{ secrets.VITE_GEMINI_API_KEY }}
+            VITE_GROQ_API_KEY=${{ secrets.VITE_GROQ_API_KEY }}
       
       - name: Create production docker-compose.yml
         run: |

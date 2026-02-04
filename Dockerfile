@@ -18,6 +18,14 @@ RUN npm install --legacy-peer-deps --no-audit --no-fund
 # Copy source code
 COPY . .
 
+# Build arguments for environment variables (passed from GitHub Actions)
+ARG VITE_GEMINI_API_KEY
+ARG VITE_GROQ_API_KEY
+
+# Set environment variables for Vite build
+ENV VITE_GEMINI_API_KEY=$VITE_GEMINI_API_KEY
+ENV VITE_GROQ_API_KEY=$VITE_GROQ_API_KEY
+
 # Build the application
 RUN npm run build
 

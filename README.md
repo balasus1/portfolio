@@ -159,7 +159,16 @@ The portfolio includes an AI-powered chatbot that can answer questions about you
 
 ### API Key Configuration
 
-Create a `.env` file in the root directory with the following variables:
+**For GitHub Production Deployment:**
+See **[GITHUB_ENV_SETUP.md](./GITHUB_ENV_SETUP.md)** for detailed instructions on adding environment variables to GitHub Secrets.
+
+**Quick Steps:**
+1. Go to: Repository → Settings → Secrets and variables → Actions
+2. Click "New repository secret"
+3. Add `VITE_GEMINI_API_KEY` and `VITE_GROQ_API_KEY` as secrets
+
+**For Local Development:**
+Create a `.env` file in the root directory:
 
 ```env
 # Gemini API Key (Primary)

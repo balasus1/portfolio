@@ -3,6 +3,7 @@ import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import AnimatedBackground from "@/components/ui/AnimatedBackground";
 import ScrollToTop from "@/components/ui/ScrollToTop";
+import ChatWidget from "@/components/chat/ChatWidget";
 import HeroSection from "@/components/sections/HeroSection";
 import AboutSection from "@/components/sections/AboutSection";
 import StatsSection from "@/components/sections/StatsSection";
@@ -53,6 +54,7 @@ const Index = () => {
 
         <Footer />
         <ScrollToTop />
+        <ChatWidget />
       </div>
     </>
   );

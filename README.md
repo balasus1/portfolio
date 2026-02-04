@@ -21,6 +21,7 @@ A modern, responsive portfolio website showcasing professional experience, proje
 - 🐳 Containerized with Docker for easy deployment
 - 🔄 Automated CI/CD pipeline
 - 📊 Interactive sections: Hero, About, Skills, Experience, Projects, Testimonials, Contact
+- 🤖 AI Chatbot with Gemini API and Groq fallback support
 
 ## 🏗️ Build & Deploy Architecture
 
@@ -151,3 +152,51 @@ docker compose up -d --build
 - **Mode Switching**: Use `./compose.sh local` or `./compose.sh prod` to switch modes
 - **Registry-based Deployment**: No source code needed on VPS - pull pre-built images
 - **CI/CD Ready**: GitHub Actions automates build and deployment
+
+## 🤖 Chatbot Setup
+
+The portfolio includes an AI-powered chatbot that can answer questions about your professional background. The chatbot uses Gemini API as the primary service with automatic fallback to Groq API if Gemini fails.
+
+### API Key Configuration
+
+Create a `.env` file in the root directory with the following variables:
+
+```env
+# Gemini API Key (Primary)
+# Get your API key from: https://aistudio.google.com/app/apikey
+VITE_GEMINI_API_KEY=your_gemini_api_key_here
+
+# Groq API Key (Fallback - Recommended)
+# Get your free API key from: https://console.groq.com/
+# Groq offers a free tier with generous rate limits and fast responses
+VITE_GROQ_API_KEY=your_groq_api_key_here
+```
+
+### Getting API Keys
+
+1. **Gemini API Key** (Google AI Studio):
+   - Visit: https://aistudio.google.com/app/apikey
+   - Sign in with your Google account
+   - Click "Create API Key"
+   - Copy the key to your `.env` file
+
+2. **Groq API Key** (Recommended for fallback):
+   - Visit: https://console.groq.com/
+   - Sign up for a free account
+   - Navigate to API Keys section
+   - Create a new API key
+   - Copy the key to your `.env` file
+
+### How It Works
+
+- The chatbot will try Gemini API first if `VITE_GEMINI_API_KEY` is configured
+- If Gemini fails (rate limits, service overload, etc.), it automatically falls back to Groq API
+- If only one API key is configured, it will use that service directly
+- The chatbot maintains conversation history for context-aware responses
+
+### Troubleshooting
+
+- **"Chatbot is not configured"**: Add at least one API key to your `.env` file
+- **"Rate limit exceeded"**: Wait a moment and try again, or configure Groq as fallback
+- **"Service overloaded"**: The API service is temporarily unavailable - the system will automatically retry with the fallback if configured
+- **Connection errors**: Check your internet connection and API key validity

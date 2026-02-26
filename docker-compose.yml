@@ -1,7 +1,7 @@
 # Unified Docker Compose configuration
 # Note: version is obsolete in Docker Compose V2, removed for compatibility
 # Switch between local and production modes using environment variables
-# 
+#
 # Local mode (default):
 #   docker-compose up -d
 #   or
@@ -24,35 +24,34 @@ services:
       dockerfile: Dockerfile
       args:
         - NODE_ENV=${NODE_ENV:-production}
-    
+
     container_name: portfolio-app
     restart: unless-stopped
-    
+
     ports:
-      - "${PORT_HTTP:-80}:80"
+      - "127.0.0.1:3000:80"
       # HTTPS port only needed for production with SSL
       # Uncomment if you have SSL certificates set up
       # - "${PORT_HTTPS:-443}:443"
-    
+
     volumes:
       - ./nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./logs:/var/log/nginx
-      - ./ssl:/etc/nginx/ssl:ro
-    
+
     networks:
       - portfolio-network
-    
+
     healthcheck:
-      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health"]
+      test: [ "CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1/health" ]
       interval: 30s
       timeout: 3s
       retries: 3
       start_period: 10s
-    
+
     labels:
       - "com.docker.compose.project=portfolio"
       - "com.docker.compose.service=portfolio"
-    
+
     # Resource limits (optional but recommended)
     deploy:
       resources:
@@ -62,14 +61,14 @@ services:
         reservations:
           cpus: ${CPU_RESERVATION:-0.25}
           memory: ${MEMORY_RESERVATION:-256M}
-    
+
     # Logging configuration
     logging:
       driver: "json-file"
       options:
         max-size: "10m"
         max-file: "3"
-    
+
     # Environment variables for the container (if needed)
     environment:
       - NODE_ENV=${NODE_ENV:-production}
